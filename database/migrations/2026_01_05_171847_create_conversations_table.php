@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
+            // Link conversations back to the owning project container.
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            // Give each conversation a clear, human title for navigation.
+            $table->string('title');
+            // Track lightweight lifecycle state without heavy workflow rules.
+            $table->string('status')->default('active');
+            // Provide a quick resume hint without scanning messages.
+            $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
         });
     }

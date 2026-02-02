@@ -162,3 +162,7 @@ vite.config.ts.timestamp-*
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+PiperProjects.code-workspace
+ProjectPipedConstruction.code-workspace
+Projects.code-workspace

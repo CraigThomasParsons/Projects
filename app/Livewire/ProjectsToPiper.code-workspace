@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "../../../Code/Constructicon"
+		},
+		{
+			"path": "../../../Code/Piper"
+		},
+		{
+			"path": "../../../Code/ConstructionSite"
+		},
+		{
+			"path": "../../../Code/HivePlan"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"dafny-autopilot.enableDevelopmentFeatures": false
+	}
+}
