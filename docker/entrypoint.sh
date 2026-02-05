@@ -1,29 +1,11 @@
-#!/bin/sh
-
+#!/usr/bin/env sh
 set -e
 
-# Ensure an environment file exists for local development.
-if [ ! -f .env ]; then
-    cp .env.example .env
-fi
+cd /var/www/html
 
-# Ensure the SQLite database file exists before migrations.
-if [ ! -f database/database.sqlite ]; then
-    touch database/database.sqlite
-fi
+# Ensure writable paths for Laravel.
+mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
-# Install PHP dependencies if vendor directory is missing.
-if [ ! -d vendor ]; then
-    composer install --no-interaction --prefer-dist
-fi
-
-# Generate an application key if it is missing.
-if ! grep -q "^APP_KEY=" .env || grep -q "^APP_KEY=$" .env; then
-    php artisan key:generate --force
-fi
-
-# Run migrations to keep the schema current.
-php artisan migrate --force
-
-# Start PHP-FPM in the foreground so the container stays alive.
-php-fpm -F
+# Start PHP-FPM
+exec php-fpm -F

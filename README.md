@@ -1,5 +1,7 @@
 # Projects
-The ChatGPT Webexperience locally.
+This repository contains the code to run the Chat-First Project Manager application.
+The chat doesn't connect to chatGPT first to have a conversation, you need to share conversations
+with the Projects application after creating them, then it will sync the conversation locally.
 
 ---
 

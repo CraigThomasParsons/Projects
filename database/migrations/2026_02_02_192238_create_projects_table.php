@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations that create the projects table.
      */
     public function up(): void
     {
-        Schema::table('conversations', function (Blueprint $table) {
-            $table->string('share_url')->nullable()->after('status');
+        Schema::create('projects', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('conversations', function (Blueprint $table) {
-            $table->dropColumn('share_url');
-        });
+        Schema::dropIfExists('projects');
     }
 };
