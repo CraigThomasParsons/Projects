@@ -1,67 +1,91 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Project;
-use App\Models\Conversation;
 use Illuminate\Support\Collection;
+use Livewire\Component;
 
-
+/**
+ * Manages the projects overview and the new project modal.
+ *
+ * This component is responsible for:
+ * - Listing all projects
+ * - Collecting basic project metadata
+ * - Linking to the per-project conversations page
+ */
 class ProjectsPage extends Component
 {
-    public bool $showModal = false;
-    public string $shareUrl = '';
+    public Collection $projects;
 
-    /** @var Collection */
-    public $projects;
-
-    /** @var Collection */
-    public $conversations;
+    public string $projectName = '';
+    public string $projectDescription = '';
+    public bool $showAddProjectModal = false;
 
     /**
-     * Opens the modal, by setting the showModal property to true.
+     * Persist a new project with basic metadata.
      */
-    public function openModal(): void
+    public function saveProject(): void
     {
-        $this->showModal = true;
-    }
-
-    /**
-     * Closes the modal, by setting the showModal property to false
-     */
-    public function closeModal(): void
-    {
-        $this->showModal = false;
-    }
-
-    /**
-     * Saves the conversation by creating a new Conversation record.
-     */
-    public function save(): void
-    {
-        $project = Project::first(); // temporary
-
-        Conversation::create([
-            'project_id' => $project->id,
-            'share_url' => $this->shareUrl,
+        logger()->info('saveProject called', [
+            'name' => $this->projectName,
+            'description' => $this->projectDescription,
+        ]);
+        // Validate inputs to keep project metadata clean.
+        $validatedData = $this->validate([
+            'projectName' => ['required', 'string', 'max:255'],
+            'projectDescription' => ['nullable', 'string'],
         ]);
 
-        $this->closeModal();
+        // Persist the project record so it appears in the list and links work.
+        Project::create([
+            'name' => $validatedData['projectName'],
+            'description' => $validatedData['projectDescription'],
+        ]);
+
+        // Refresh the project list and reset the form for the next entry.
+        $this->loadProjects();
+        $this->resetProjectForm();
+        $this->dispatch('close-project-modal');
+        $this->showAddProjectModal = false;
+
+        session()->flash('success', 'Project created.');
     }
 
     /**
-     * Mounts the component, loading projects and conversations.
+     * Load projects when the component mounts.
      */
     public function mount(): void
     {
-        $this->projects = Project::all();
-        $this->conversations = Conversation::latest()->get();
+        // Fetch projects so the list renders on first paint.
+        $this->loadProjects();
     }
 
     /**
-     * Renders the component, see app.blade.php
-    */
+     * Refresh the project collection.
+     */
+    private function loadProjects(): void
+    {
+        // Order by latest so new projects bubble to the top.
+        $this->projects = Project::latest()->get();
+    }
+
+    /**
+     * Reveal the add project modal and reset form inputs.
+     */
+    public function openAddProjectForm(): void
+    {
+        // Clear out the previous project data.
+        $this->projectName = '';
+        $this->projectDescription = '';
+        $this->showAddProjectModal = true;
+    }
+
+    /**
+     * Render the component view.
+     */
     public function render()
     {
         return view('livewire.projects-page')

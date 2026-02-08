@@ -1,0 +1,22 @@
+{
+  "name": "ChatProjects",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "app",
+  "workspaceFolder": "/var/www/html",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [
+    8084,
+    4445
+  ],
+  "portsAttributes": {
+    "8084": {
+      "label": "Nginx"
+    },
+    "4445": {
+      "label": "Selenium"
+    }
+  },
+  "postCreateCommand": "composer install"
+}

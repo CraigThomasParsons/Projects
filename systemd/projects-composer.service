@@ -1,0 +1,9 @@
+[Unit]
+Description=Run composer install on composer file changes
+Requires=projects.service
+After=projects.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Code/ChatProjects
+ExecStart=/usr/bin/env docker compose exec -T app composer install --ansi

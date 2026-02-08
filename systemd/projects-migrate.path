@@ -1,0 +1,8 @@
+[Unit]
+Description=Watch migrations for changes
+
+[Path]
+PathModified=%h/Code/ChatProjects/database/migrations
+
+[Install]
+WantedBy=default.target

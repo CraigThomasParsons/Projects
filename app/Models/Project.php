@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description'];
 
     /**
      * Get the conversations for the project.
-     * 
-     * @return Conversations
      */
     public function conversations(): HasMany
     {

@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Laravel migrations on change
+Requires=projects.service
+After=projects.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/Code/ChatProjects
+ExecStart=/usr/bin/env docker compose exec -T app php artisan migrate --ansi

@@ -1,0 +1,16 @@
+[Unit]
+Description=Projects Docker Compose Watch
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Code/ChatProjects
+ExecStart=/usr/bin/env docker compose up --watch
+ExecStop=/usr/bin/env docker compose down
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

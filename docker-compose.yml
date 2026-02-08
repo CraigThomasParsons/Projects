@@ -1,0 +1,89 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /var/www/html
+    develop:
+      watch:
+        - action: sync+exec
+          path: app
+          target: /var/www/html/app
+          exec:
+            command: php artisan test --ansi
+        - action: sync+exec
+          path: routes
+          target: /var/www/html/routes
+          exec:
+            command: php artisan test --ansi
+        - action: sync+exec
+          path: tests
+          target: /var/www/html/tests
+          exec:
+            command: php artisan test --ansi
+        - action: sync+exec
+          path: tests/codeception
+          target: /var/www/html/tests/codeception
+          exec:
+            command: php vendor/bin/codecept run functional --ansi
+        - action: sync+exec
+          path: tests/codeception/Acceptance
+          target: /var/www/html/tests/codeception/Acceptance
+          exec:
+            command: php vendor/bin/codecept run acceptance --ansi
+        - action: sync+exec
+          path: resources
+          target: /var/www/html/resources
+          exec:
+            command: php artisan test --ansi
+        - action: sync+exec
+          path: config
+          target: /var/www/html/config
+          exec:
+            command: php artisan test --ansi
+        - action: sync+exec
+          path: database/migrations
+          target: /var/www/html/database/migrations
+          exec:
+            command: php artisan migrate --ansi
+        - action: sync+exec
+          path: composer.json
+          target: /var/www/html/composer.json
+          exec:
+            command: composer install --ansi
+        - action: sync+exec
+          path: composer.lock
+          target: /var/www/html/composer.lock
+          exec:
+            command: composer install --ansi
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./:/var/www/html
+      - /home/craigpar/Code/Piper/share_inbox:/home/craigpar/Code/Piper/share_inbox
+    environment:
+      APP_ENV: local
+      APP_URL: http://localhost:8084
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    command: [ "sh", "/var/www/html/docker/entrypoint.sh" ]
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - "8084:80"
+    volumes:
+      - ./:/var/www/html:ro
+      - ./resources/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    shm_size: 2gb
+    ports:
+      - "4445:4444"

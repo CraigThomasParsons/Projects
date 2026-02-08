@@ -1,0 +1,6 @@
+actor: ProdTester
+modules:
+  enabled:
+    - PhpBrowser:
+        url: https://projects.elasticgun.com
+    - Asserts

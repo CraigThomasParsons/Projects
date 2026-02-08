@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch composer files for changes
+
+[Path]
+PathModified=%h/Code/ChatProjects/composer.json
+PathModified=%h/Code/ChatProjects/composer.lock
+
+[Install]
+WantedBy=default.target

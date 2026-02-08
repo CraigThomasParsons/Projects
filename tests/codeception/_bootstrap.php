@@ -1,0 +1,3 @@
+<?php
+
+// Codeception bootstrap.

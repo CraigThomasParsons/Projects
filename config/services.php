@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'piper' => [
+        'token' => env('PIPER_TOKEN'),
+    ],
+
 ];

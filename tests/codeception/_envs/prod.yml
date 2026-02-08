@@ -1,0 +1,6 @@
+modules:
+  config:
+    WebDriver:
+      host: 127.0.0.1
+      port: 4444
+      url: https://projects.elasticgun.com
