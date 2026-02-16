@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('project_id');
             $table->string('title')->nullable();
             $table->text('share_url');
             $table->longText('raw_content')->nullable();
             $table->timestamps();
+
+            $table->index('project_id');
         });
     }
 

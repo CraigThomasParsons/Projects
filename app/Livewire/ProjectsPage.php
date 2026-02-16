@@ -48,7 +48,7 @@ class ProjectsPage extends Component
         // Refresh the project list and reset the form for the next entry.
         $this->loadProjects();
         $this->resetProjectForm();
-        $this->dispatch('close-project-modal');
+
         $this->showAddProjectModal = false;
 
         session()->flash('success', 'Project created.');
@@ -81,6 +81,14 @@ class ProjectsPage extends Component
         $this->projectName = '';
         $this->projectDescription = '';
         $this->showAddProjectModal = true;
+    }
+
+    public function resetProjectForm(): void
+    {
+        // Clear out the previous project data.
+        $this->projectName = '';
+        $this->projectDescription = '';
+        $this->showAddProjectModal = false;
     }
 
     /**

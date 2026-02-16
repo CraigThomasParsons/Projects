@@ -3,6 +3,20 @@ This repository contains the code to run the Chat-First Project Manager applicat
 The chat doesn't connect to chatGPT first to have a conversation, you need to share conversations
 with the Projects application after creating them, then it will sync the conversation locally.
 
+## Database Source of Truth (Important)
+
+- ChatProjects must use the local host PostgreSQL instance on port `5432`.
+- Do not run a PostgreSQL Docker container for this app.
+- Running both host and container PostgreSQL causes recurring schema drift,
+  which is the root cause of errors like `SQLSTATE[42P01] relation "projects" does not exist`.
+
+## Runtime Deployment Policy (Important)
+
+- ChatProjects (`projects.elasticgun.com`) runs on metal via systemd + host PHP.
+- Standard service entrypoint is [systemd/projects.service](systemd/projects.service).
+- Do not run ChatProjects web/app containers during normal operation.
+- Docker may be used only for isolated experiments, never as default production/runtime path.
+
 ---
 
 # Chat-First Project Manager

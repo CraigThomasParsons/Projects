@@ -221,6 +221,7 @@ json_encode($jobPayload, JSON_PRETTY_PRINT);
 - Blank lines between logical sections
 
 - Opening braces on the next line for classes and functions
+- Brace placement is mandatory for all project PHP code (classes and functions only)
 
 ---
 

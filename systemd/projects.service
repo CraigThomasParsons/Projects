@@ -1,13 +1,16 @@
 [Unit]
-Description=Projects Docker Compose Watch
+Description=Projects Laravel Metal Service
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
 WorkingDirectory=%h/Code/ChatProjects
-ExecStart=/usr/bin/env docker compose up --watch
-ExecStop=/usr/bin/env docker compose down
+# Deployment policy (important):
+# - ChatProjects runs on metal.
+# - Do NOT run this app via Docker Compose in normal operation.
+# - This avoids split-brain database confusion between host and container DBs.
+ExecStart=/usr/bin/env php artisan serve --host=127.0.0.1 --port=8083
 Restart=always
 RestartSec=5
 TimeoutStopSec=30

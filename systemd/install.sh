@@ -10,3 +10,5 @@ ln -sf ~/Code/ChatProjects/systemd/projects-composer.service ~/.config/systemd/u
 
 systemctl --user daemon-reload
 systemctl --user enable --now projects.service
+systemctl --user enable --now projects-migrate.path
+systemctl --user enable --now projects-composer.path

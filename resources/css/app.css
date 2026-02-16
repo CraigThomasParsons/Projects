@@ -27,26 +27,54 @@
     --sr-text-glow: 0 0 2px var(--sr-neon-cyan);
 }
 
+/* Default body styles (Light/Foundation) */
 body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* CYBERPUNK THEME SCOPE */
+body.cyberpunk {
     background-color: var(--sr-bg-dark);
     color: var(--sr-text-main);
     font-family: var(--sr-font-body);
     font-size: 18px;
-    /* Slightly larger for readability */
     background-image:
         linear-gradient(rgba(0, 20, 40, 0.7) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 20, 40, 0.7) 1px, transparent 1px);
     background-size: 40px 40px;
-    /* Grid effect */
     min-height: 100vh;
 }
+    .project-page-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+    .page-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edit-project-callout {
+        flex: 1;
+        min-height: calc(100vh - 180px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .edit-project-callout textarea {
+        min-height: 45vh;
+    }
+
+/* Scoped Headers */
+body.cyberpunk h1,
+body.cyberpunk h2,
+body.cyberpunk h3,
+body.cyberpunk h4,
+body.cyberpunk h5,
+body.cyberpunk h6 {
     font-family: var(--sr-font-header);
     color: var(--sr-neon-cyan);
     text-transform: uppercase;
@@ -54,19 +82,20 @@ h6 {
     text-shadow: var(--sr-text-glow);
 }
 
-a {
+/* Scoped Links */
+body.cyberpunk a {
     color: var(--sr-neon-blue);
     transition: all 0.3s ease;
 }
 
-a:hover {
+body.cyberpunk a:hover {
     color: var(--sr-neon-cyan);
     text-shadow: 0 0 8px var(--sr-neon-cyan);
 }
 
-/* Foundation Overrides & Custom Components */
+/* Foundation Overrides & Custom Components (Scoped) */
 
-.button {
+body.cyberpunk .button {
     background-color: transparent;
     border: 1px solid var(--sr-neon-cyan);
     color: var(--sr-neon-cyan);
@@ -76,30 +105,30 @@ a:hover {
     box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
-.button:hover,
-.button:focus {
+body.cyberpunk .button:hover,
+body.cyberpunk .button:focus {
     background-color: rgba(0, 255, 255, 0.1);
     border-color: #fff;
     color: #fff;
     box-shadow: 0 0 15px var(--sr-neon-cyan), inset 0 0 20px rgba(0, 255, 255, 0.2);
 }
 
-.button.primary {
+body.cyberpunk .button.primary {
     background-color: rgba(0, 255, 255, 0.1);
 }
 
-.button.secondary {
+body.cyberpunk .button.secondary {
     border-color: var(--sr-text-muted);
     color: var(--sr-text-muted);
 }
 
-.button.secondary:hover {
+body.cyberpunk .button.secondary:hover {
     border-color: var(--sr-text-main);
     color: var(--sr-text-main);
     box-shadow: 0 0 10px var(--sr-text-main);
 }
 
-.callout {
+body.cyberpunk .callout {
     background-color: rgba(8, 16, 24, 0.92);
     border: 1px solid rgba(0, 255, 255, 0.35);
     border-left: 5px solid var(--sr-neon-cyan);
@@ -111,7 +140,7 @@ a:hover {
 }
 
 /* Tech decoration for callouts */
-.callout::before {
+body.cyberpunk .callout::before {
     content: '';
     position: absolute;
     top: 0;
@@ -122,29 +151,36 @@ a:hover {
     opacity: 0.5;
 }
 
-.callout.success {
+body.cyberpunk .callout.success {
     background-color: rgba(0, 50, 0, 0.8);
     border-color: #00ff00;
 }
 
-.callout.alert {
+body.cyberpunk .callout.alert {
     background-color: rgba(50, 0, 0, 0.8);
     border-color: var(--sr-neon-red);
+    color: #ff4d4d;
+    text-shadow: 0 0 6px rgba(255, 77, 77, 0.35);
 }
 
-.callout.secondary {
+body.cyberpunk .callout.alert a,
+body.cyberpunk .callout.alert strong {
+    color: #ff6b6b;
+}
+
+body.cyberpunk .callout.secondary {
     background-color: rgba(12, 20, 30, 0.95);
     border-color: rgba(0, 170, 255, 0.35);
     color: #e9f3ff;
 }
 
-.callout.secondary a,
-.callout.secondary a strong {
+body.cyberpunk .callout.secondary a,
+body.cyberpunk .callout.secondary a strong {
     color: #e9f3ff;
 }
 
 /* Project List Item Styling */
-.project-list-item {
+body.cyberpunk .project-list-item {
     background-color: #1a1a1a;
     border: 1px solid #333;
     margin-bottom: 1rem;
@@ -153,18 +189,18 @@ a:hover {
     list-style-type: none;
 }
 
-.project-list-item:hover {
+body.cyberpunk .project-list-item:hover {
     background-color: #252525;
     border-color: var(--sr-neon-cyan);
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
 }
 
-.project-list-item .project-link {
+body.cyberpunk .project-list-item .project-link {
     display: block;
     text-decoration: none;
 }
 
-.project-list-item strong {
+body.cyberpunk .project-list-item strong {
     color: #4db8ff;
     /* Ice Blue title */
     font-family: 'Orbitron', sans-serif;
@@ -173,7 +209,7 @@ a:hover {
     margin-bottom: 0.25rem;
 }
 
-.project-list-item .subheader {
+body.cyberpunk .project-list-item .subheader {
     color: #888;
     /* Grey description */
     font-family: 'Rajdhani', sans-serif;
@@ -181,8 +217,8 @@ a:hover {
 }
 
 /* Modal Styling */
-.reveal,
-.modal {
+body.cyberpunk .reveal,
+body.cyberpunk .modal {
     background-color: rgba(5, 10, 16, 0.95);
     border: 1px solid var(--sr-neon-cyan);
     color: var(--sr-text-main);
@@ -191,29 +227,29 @@ a:hover {
     padding: 3rem !important;
 }
 
-.reveal h2,
-.modal h2 {
+body.cyberpunk .reveal h2,
+body.cyberpunk .modal h2 {
     border-bottom: 1px solid var(--sr-neon-blue);
     padding-bottom: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
 /* Form Inputs */
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="month"],
-input[type="week"],
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="time"],
-input[type="url"],
-input[type="color"],
-textarea {
+body.cyberpunk input[type="text"],
+body.cyberpunk input[type="password"],
+body.cyberpunk input[type="date"],
+body.cyberpunk input[type="datetime"],
+body.cyberpunk input[type="datetime-local"],
+body.cyberpunk input[type="month"],
+body.cyberpunk input[type="week"],
+body.cyberpunk input[type="email"],
+body.cyberpunk input[type="number"],
+body.cyberpunk input[type="search"],
+body.cyberpunk input[type="tel"],
+body.cyberpunk input[type="time"],
+body.cyberpunk input[type="url"],
+body.cyberpunk input[type="color"],
+body.cyberpunk textarea {
     background-color: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--sr-neon-blue);
     color: var(--sr-neon-cyan);
@@ -222,21 +258,21 @@ textarea {
     transition: all 0.3s ease;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="month"],
-input[type="week"],
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="time"],
-input[type="url"],
-input[type="color"],
-textarea {
+body.cyberpunk input[type="text"],
+body.cyberpunk input[type="password"],
+body.cyberpunk input[type="date"],
+body.cyberpunk input[type="datetime"],
+body.cyberpunk input[type="datetime-local"],
+body.cyberpunk input[type="month"],
+body.cyberpunk input[type="week"],
+body.cyberpunk input[type="email"],
+body.cyberpunk input[type="number"],
+body.cyberpunk input[type="search"],
+body.cyberpunk input[type="tel"],
+body.cyberpunk input[type="time"],
+body.cyberpunk input[type="url"],
+body.cyberpunk input[type="color"],
+body.cyberpunk textarea {
     background-color: #1a1a1a;
     border: 1px solid #333;
     color: #e0e0e0;
@@ -248,8 +284,8 @@ textarea {
     border-radius: 4px;
 }
 
-input[type="text"]:focus,
-textarea:focus {
+body.cyberpunk input[type="text"]:focus,
+body.cyberpunk textarea:focus {
     background-color: #252525;
     border-color: var(--sr-neon-cyan);
     color: #fff;
@@ -257,40 +293,40 @@ textarea:focus {
     outline: none;
 }
 
-label {
+body.cyberpunk label {
     color: var(--sr-neon-blue);
     font-family: var(--sr-font-header);
     font-size: 0.9rem;
     text-transform: uppercase;
 }
 
-.close-button {
+body.cyberpunk .close-button {
     color: var(--sr-neon-red);
 }
 
-.close-button:hover {
+body.cyberpunk .close-button:hover {
     color: #ff0000;
     text-shadow: 0 0 5px #ff0000;
 }
 
 /* Custom Utilities */
-.text-glow {
+body.cyberpunk .text-glow {
     text-shadow: var(--sr-text-glow);
 }
 
 
-.project-link {
+body.cyberpunk .project-link {
     display: block;
     text-decoration: none;
     color: #e9f3ff;
 }
 
-.project-link:hover strong {
+body.cyberpunk .project-link:hover strong {
     color: var(--sr-neon-cyan);
     text-shadow: 0 0 10px var(--sr-neon-cyan);
 }
 
-.project-link .subheader {
+body.cyberpunk .project-link .subheader {
     color: var(--sr-text-muted);
     font-size: 0.9em;
     border-top: 1px solid rgba(0, 170, 255, 0.2);
@@ -299,39 +335,40 @@ label {
     transition: all 0.3s ease;
 }
 
-.project-link:hover .subheader {
+body.cyberpunk .project-link:hover .subheader {
     color: var(--sr-neon-blue);
     border-color: var(--sr-neon-cyan);
 }
 
 /* Modal Form Specifics */
-.modal label {
+body.cyberpunk .modal label {
     display: block;
     margin-bottom: 1rem;
 }
 
-.modal .form-error {
+body.cyberpunk .modal .form-error {
     color: var(--sr-neon-red);
     font-size: 0.8rem;
     margin-top: 0.25rem;
     display: block;
+    /* Ensure error messages block */
 }
 
 /* Custom Scrollbar */
-::-webkit-scrollbar {
+body.cyberpunk ::-webkit-scrollbar {
     width: 10px;
 }
 
-::-webkit-scrollbar-track {
+body.cyberpunk ::-webkit-scrollbar-track {
     background: var(--sr-bg-dark);
 }
 
-::-webkit-scrollbar-thumb {
+body.cyberpunk ::-webkit-scrollbar-thumb {
     background: var(--sr-neon-blue);
     border: 1px solid var(--sr-neon-cyan);
 }
 
-::-webkit-scrollbar-thumb:hover {
+body.cyberpunk ::-webkit-scrollbar-thumb:hover {
     background: var(--sr-neon-cyan);
     box-shadow: 0 0 10px var(--sr-neon-cyan);
 }
@@ -369,6 +406,127 @@ label {
     }
 }
 
-h1 {
+body.cyberpunk h1 {
     animation: text-flicker 3s infinite alternate;
+}
+
+/* Markdown Content Styling */
+body.cyberpunk .markdown-content {
+    color: #e0e0e0;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-left: 2px solid var(--sr-neon-cyan);
+    margin-bottom: 3rem;
+}
+
+body.cyberpunk .markdown-content h1,
+body.cyberpunk .markdown-content h2,
+body.cyberpunk .markdown-content h3 {
+    color: var(--sr-neon-cyan);
+    font-family: 'Orbitron', sans-serif;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+body.cyberpunk .markdown-content p {
+    margin-bottom: 1rem;
+}
+
+body.cyberpunk .markdown-content ul,
+body.cyberpunk .markdown-content ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+body.cyberpunk .markdown-content li {
+    margin-bottom: 0.25rem;
+}
+
+body.cyberpunk .markdown-content code {
+    background-color: #1a1a1a;
+    color: var(--sr-neon-blue);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+body.cyberpunk .markdown-content pre {
+    background-color: #0d0d0d;
+    padding: 1rem;
+    border: 1px solid #333;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+body.cyberpunk .markdown-content blockquote {
+    border-left: 4px solid var(--sr-neon-blue);
+    padding-left: 1rem;
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Conversation Transcript Layout */
+body.cyberpunk .conversation-transcript-panel {
+    border: 1px solid rgba(0, 170, 255, 0.35);
+    background-color: rgba(8, 16, 24, 0.92);
+    padding: 1rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    box-shadow: 0 0 15px rgba(0, 170, 255, 0.1);
+}
+
+body.cyberpunk .conversation-transcript-body {
+    margin-bottom: 0;
+}
+
+/* Header & Footer Layout */
+body.cyberpunk .page-header {
+    border-bottom: 2px solid var(--sr-neon-blue);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 5px;
+    /* applied directly as requested */
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+body.cyberpunk .page-header .button {
+    margin-bottom: 0;
+    margin-top: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+/* 
+   Edit Project Button Styling 
+   Initial state: Matches "Back to Projects" (Inherits .button.hollow.secondary)
+   Hover state: Fades to Neon Green Glow
+*/
+body.cyberpunk .page-header .button.secondary:hover {
+    color: #fff;
+    border-color: #39ff14;
+    /* Neon Green */
+    background-color: rgba(57, 255, 20, 0.2);
+    box-shadow: 0 0 15px #39ff14;
+}
+
+body.cyberpunk .page-footer {
+    border-top: 2px solid var(--sr-neon-red);
+    background-color: rgba(20, 0, 0, 0.3);
+    padding: 1rem 2rem;
+    margin-top: 4rem;
+}
+
+body.cyberpunk .danger-zone-label {
+    color: var(--sr-neon-red);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px var(--sr-neon-red);
 }

@@ -6,4 +6,5 @@ After=projects.service
 [Service]
 Type=oneshot
 WorkingDirectory=%h/Code/ChatProjects
-ExecStart=/usr/bin/env docker compose exec -T app php artisan migrate --ansi
+# Metal policy: run migrations directly on host PHP runtime.
+ExecStart=/usr/bin/env php artisan migrate --ansi

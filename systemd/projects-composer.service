@@ -6,4 +6,5 @@ After=projects.service
 [Service]
 Type=oneshot
 WorkingDirectory=%h/Code/ChatProjects
-ExecStart=/usr/bin/env docker compose exec -T app composer install --ansi
+# Metal policy: run composer directly on host runtime.
+ExecStart=/usr/bin/env composer install --ansi

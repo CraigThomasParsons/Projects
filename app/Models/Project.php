@@ -7,7 +7,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
-    protected $fillable = ['name', 'description'];
+    protected $fillable = [
+        'name',
+        'description',
+        'code_folder',
+        'local_location',
+        'github_repo',
+        'gitea_location',
+        'framework_description',
+        'languages',
+    ];
 
     /**
      * Get the conversations for the project.

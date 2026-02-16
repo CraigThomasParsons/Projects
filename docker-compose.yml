@@ -1,3 +1,8 @@
+# NOTE FOR FUTURE MAINTAINERS / LLMS:
+# ChatProjects runs on metal via systemd (see systemd/projects.service).
+# This compose file is retained only for isolated experiments.
+# Do not use it as the default runtime for projects.elasticgun.com.
+
 services:
   app:
     build:
@@ -63,13 +68,15 @@ services:
       - /home/craigpar/Code/Piper/share_inbox:/home/craigpar/Code/Piper/share_inbox
     environment:
       APP_ENV: local
-      APP_URL: http://localhost:8084
-      DB_CONNECTION: ${DB_CONNECTION}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
+      APP_URL: http://localhost:8083
+      # Local DB policy: ChatProjects must use host PostgreSQL (not a compose DB service).
+      # This prevents schema drift between host and container databases.
+      DB_CONNECTION: pgsql
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_DATABASE: projectsStorage
+      DB_USERNAME: manager
+      DB_PASSWORD: one
     command: [ "sh", "/var/www/html/docker/entrypoint.sh" ]
 
   nginx:
@@ -77,7 +84,7 @@ services:
     depends_on:
       - app
     ports:
-      - "8084:80"
+      - "8083:80"
     volumes:
       - ./:/var/www/html:ro
       - ./resources/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -87,3 +94,4 @@ services:
     shm_size: 2gb
     ports:
       - "4445:4444"
+

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Conversation;
+use App\Services\SharePageFetcher;
+use App\Services\SharePayloadInspector;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 /**
  * Imports a shared ChatGPT conversation into local storage.
@@ -30,7 +32,7 @@ final class ChatGptShareImporter
     public function import(Conversation $conversation, string $shareUrl): void
     {
         // Fetch the share page so we can parse the embedded payload.
-        $sharePageHtml = $this->fetchSharePageHtml($shareUrl);
+        $sharePageHtml = app(SharePageFetcher::class)->fetchSharePageHtml($shareUrl);
 
         // Locate the structured conversation payload in the page.
         $conversationPayload = $this->extractConversationPayload($sharePageHtml);
@@ -43,6 +45,13 @@ final class ChatGptShareImporter
         // Extract title and messages into a normalized markdown representation.
         $conversationTitle = $this->extractConversationTitle($conversationPayload);
         $normalizedMessages = $this->extractNormalizedMessages($conversationPayload);
+
+        // Fall back to stream payload parsing when the JSON payload lacks messages.
+        if (empty($normalizedMessages)) {
+            $payloadInspector = app(SharePayloadInspector::class);
+            $streamPayloads = $payloadInspector->extractReactRouterStreamPayloads($sharePageHtml);
+            $normalizedMessages = $payloadInspector->extractStreamMessages($streamPayloads);
+        }
         $markdownDocument = $this->buildMarkdownDocument($conversationTitle, $normalizedMessages, $shareUrl);
 
         // Persist the metadata and raw content for future display.
@@ -52,28 +61,15 @@ final class ChatGptShareImporter
 
         // Write the markdown file so it can be referenced outside the database.
         $markdownFilename = $this->buildMarkdownFilename($conversation, $conversationTitle);
-        Storage::disk('local')->put($markdownFilename, $markdownDocument);
-    }
 
-    /**
-     * Fetch the HTML for the share URL.
-     */
-    private function fetchSharePageHtml(string $shareUrl): string
-    {
-        // Use a basic browser-like request to avoid being blocked by the share page.
-        $httpResponse = Http::withHeaders([
-            'User-Agent' => 'ChatProjects/1.0 (+https://chatgpt.com)',
-            'Accept' => 'text/html,application/xhtml+xml',
-        ])
-            ->timeout(20)
-            ->get($shareUrl);
-
-        // Fail fast if the share URL does not return a successful response.
-        if (!$httpResponse->successful()) {
-            throw new RuntimeException("Failed to fetch share URL (HTTP {$httpResponse->status()}).");
+        try {
+            // Ensure the target directory exists before writing.
+            Storage::disk('local')->makeDirectory('conversations');
+            Storage::disk('local')->put($markdownFilename, $markdownDocument);
+        } catch (Throwable $exception) {
+            // Log the failure but keep the database content intact.
+            report($exception);
         }
-
-        return (string) $httpResponse->body();
     }
 
     /**
@@ -84,7 +80,15 @@ final class ChatGptShareImporter
         // Attempt structured JSON entry points first.
         $jsonPayloadCandidates = $this->extractJsonPayloadCandidates($sharePageHtml);
 
+        // Include React Router stream payloads from newer share pages.
+        $payloadInspector = app(SharePayloadInspector::class);
+        $reactRouterPayloads = $payloadInspector->extractReactRouterStreamPayloads($sharePageHtml);
+        foreach ($reactRouterPayloads as $reactRouterPayload) {
+            $jsonPayloadCandidates[] = $reactRouterPayload;
+        }
+
         foreach ($jsonPayloadCandidates as $jsonPayloadCandidate) {
+            // Decode the candidate so we can locate nested conversation data.
             $decodedStructure = json_decode($jsonPayloadCandidate, true);
 
             // Skip invalid JSON blocks early.
@@ -97,6 +101,12 @@ final class ChatGptShareImporter
             if ($conversationPayload !== null) {
                 return $conversationPayload;
             }
+
+            // Some stream payloads are not valid JSON, so parse them explicitly.
+            $streamPayload = $this->extractStreamConversationPayload($jsonPayloadCandidate);
+            if ($streamPayload !== null) {
+                return $streamPayload;
+            }
         }
 
         // Fall back to searching for embedded payload keys in the raw HTML.
@@ -108,6 +118,117 @@ final class ChatGptShareImporter
         }
 
         return null;
+    }
+
+    /**
+     * Attempt to build a conversation payload from React Router stream data.
+     */
+    private function extractStreamConversationPayload(string $decodedStream): ?array
+    {
+        // Ignore streams that do not contain the mapping payload.
+        if (strpos($decodedStream, '"mapping"') === false) {
+            return null;
+        }
+
+        $mapping = $this->extractStreamObject($decodedStream, 'mapping');
+        if ($mapping === null) {
+            // Bail out if the mapping object cannot be reconstructed.
+            return null;
+        }
+
+        $title = $this->extractStreamStringValue($decodedStream, 'title');
+        $currentNode = $this->extractStreamStringValue($decodedStream, 'current_node')
+            ?? $this->extractStreamStringValue($decodedStream, 'currentNode');
+
+        return array_filter([
+            'title' => $title,
+            'current_node' => $currentNode,
+            'mapping' => $mapping,
+        ], static fn ($value) => $value !== null);
+    }
+
+    /**
+     * Extract an object literal that follows a stream key like "mapping".
+     */
+    private function extractStreamObject(string $decodedStream, string $key): ?array
+    {
+        $needle = '"' . $key . '"';
+        $needlePosition = strpos($decodedStream, $needle);
+        if ($needlePosition === false) {
+            // Stop if the stream does not include the requested key.
+            return null;
+        }
+
+        $objectStartPosition = strpos($decodedStream, '{', $needlePosition);
+        if ($objectStartPosition === false) {
+            // Guard against malformed streams with missing objects.
+            return null;
+        }
+
+        $jsonPayload = $this->extractJsonObject($decodedStream, $objectStartPosition);
+        if ($jsonPayload === null) {
+            // Avoid decoding partial JSON fragments.
+            return null;
+        }
+
+        $decodedPayload = json_decode($jsonPayload, true);
+        if (!is_array($decodedPayload)) {
+            // Ensure the payload is valid JSON before returning it.
+            return null;
+        }
+
+        return $decodedPayload;
+    }
+
+    /**
+     * Extract a string value that follows a stream key like "title".
+     */
+    private function extractStreamStringValue(string $decodedStream, string $key): ?string
+    {
+        $needle = '"' . $key . '"';
+        $needlePosition = strpos($decodedStream, $needle);
+        if ($needlePosition === false) {
+            // Skip missing keys so we do not misread unrelated values.
+            return null;
+        }
+
+        $valueStart = strpos($decodedStream, '"', $needlePosition + strlen($needle));
+        if ($valueStart === false) {
+            // Guard against streams that omit the expected quoted value.
+            return null;
+        }
+
+        $cursor = $valueStart + 1;
+        $buffer = '';
+        $isEscaped = false;
+        $length = strlen($decodedStream);
+
+        for (; $cursor < $length; $cursor++) {
+            $character = $decodedStream[$cursor];
+
+            if ($isEscaped) {
+                // Preserve escape sequences inside the stream value.
+                $buffer .= $character;
+                $isEscaped = false;
+                continue;
+            }
+
+            if ($character === '\\') {
+                // Track escapes to avoid terminating inside a value.
+                $isEscaped = true;
+                continue;
+            }
+
+            if ($character === '"') {
+                // End of the quoted value.
+                break;
+            }
+
+            $buffer .= $character;
+        }
+
+        // Return null for empty values so callers can fall back safely.
+        return $buffer !== '' ? $buffer : null;
     }
 
     /**
@@ -286,8 +407,33 @@ final class ChatGptShareImporter
      */
     private function looksLikeConversationPayload(array $decodedPayload): bool
     {
-        return (isset($decodedPayload['mapping']) && is_array($decodedPayload['mapping']))
-            || (isset($decodedPayload['messages']) && is_array($decodedPayload['messages']));
+        if (isset($decodedPayload['messages']) && is_array($decodedPayload['messages'])) {
+            return true;
+        }
+
+        if (!isset($decodedPayload['mapping']) || !is_array($decodedPayload['mapping'])) {
+            return false;
+        }
+
+        return $this->mappingContainsMessageNodes($decodedPayload['mapping']);
+    }
+
+    /**
+     * Confirm that a mapping payload contains message nodes, not just IDs.
+     */
+    private function mappingContainsMessageNodes(array $mapping): bool
+    {
+        foreach ($mapping as $mappingNode) {
+            if (!is_array($mappingNode)) {
+                continue;
+            }
+
+            if (isset($mappingNode['message']) && is_array($mappingNode['message'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -493,6 +639,7 @@ final class ChatGptShareImporter
 
         return null;
     }
+
 
     /**
      * Build markdown content from normalized messages.

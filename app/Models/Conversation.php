@@ -11,6 +11,7 @@ class Conversation extends Model
         'project_id',
         'title',
         'share_url',
+        'source_type',
         'raw_content',
     ];
 

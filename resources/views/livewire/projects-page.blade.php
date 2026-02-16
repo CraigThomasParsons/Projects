@@ -4,6 +4,9 @@
             <h1 class="h2">Projects</h1>
         </div>
         <div class="cell small-6 text-right">
+                <button class="button hollow secondary theme-toggle" style="margin-right: 0.5rem;">
+                    Light Mode ☀️
+                </button>
                 @if ($showAddProjectModal === false)
                     <button
                         class="button primary"
