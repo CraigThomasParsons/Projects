@@ -6,6 +6,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
+use Throwable;
 
 /**
  * Fetches share page HTML using HTTP, with an optional Playwright fallback.
@@ -55,16 +56,21 @@ final class SharePageFetcher
      */
     private function fetchSharePageHtmlViaPlaywrightServer(string $shareUrl): ?string
     {
-        $playwrightEndpoint = env('PLAYWRIGHT_SHARE_ENDPOINT');
+        $playwrightEndpoint = $this->resolvePlaywrightEndpoint();
 
         // Skip the HTTP fallback when no endpoint is configured.
-        if (!is_string($playwrightEndpoint) || trim($playwrightEndpoint) === '') {
+        if ($playwrightEndpoint === '') {
             return null;
         }
 
-        $httpResponse = Http::timeout(60)->get($playwrightEndpoint, [
-            'url' => $shareUrl,
-        ]);
+        try {
+            $httpResponse = Http::timeout(60)->get($playwrightEndpoint, [
+                'url' => $shareUrl,
+            ]);
+        } catch (Throwable) {
+            // Network-level failures (DNS/connection refused) should not block local fallbacks.
+            return null;
+        }
 
         if (!$httpResponse->successful()) {
             return null;
@@ -77,6 +83,30 @@ final class SharePageFetcher
         }
 
         return $playwrightHtml;
+    }
+
+    /**
+     * Resolve Playwright endpoint for the current runtime.
+     */
+    private function resolvePlaywrightEndpoint(): string
+    {
+        $playwrightEndpoint = trim((string) env('PLAYWRIGHT_SHARE_ENDPOINT', ''));
+
+        if ($playwrightEndpoint === '') {
+            return '';
+        }
+
+        // When running directly on Linux host, host.docker.internal often won't resolve.
+        // Auto-rewrite to localhost so existing container-era env values keep working.
+        if (
+            PHP_OS_FAMILY === 'Linux'
+            && !is_file('/.dockerenv')
+            && str_contains($playwrightEndpoint, 'host.docker.internal')
+        ) {
+            return str_replace('host.docker.internal', '127.0.0.1', $playwrightEndpoint);
+        }
+
+        return $playwrightEndpoint;
     }
 
     /**

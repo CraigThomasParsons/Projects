@@ -1,0 +1,130 @@
+/* LCARS Theme / Star Trek TNG Style */
+:root {
+    --lcars-orange: #ff9900;
+    --lcars-red: #cc0000;
+    --lcars-purple: #9933cc;
+    --lcars-blue: #3366cc;
+    --lcars-bg: #000000;
+    --lcars-text: #ff9900;
+    --lcars-font: 'Swiss911', 'Arial Narrow', sans-serif;
+    --lcars-curve-radius: 30px;
+}
+
+body.lcars {
+    background-color: var(--lcars-bg);
+    color: var(--lcars-text);
+    font-family: var(--lcars-font);
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+}
+
+body.lcars h1, body.lcars h2, body.lcars h3 {
+    color: var(--lcars-orange);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+body.lcars a {
+    color: var(--lcars-blue);
+    text-decoration: none;
+}
+body.lcars a:hover {
+    color: var(--lcars-red);
+}
+
+/* LCARS Layout Structure */
+body.lcars .container {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+}
+
+/* Sidebar / Curve */
+body.lcars .lcars-sidebar {
+    background-color: var(--lcars-purple);
+    width: 120px;
+    height: 100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: var(--lcars-curve-radius);
+    margin-right: 20px;
+    position: relative;
+}
+
+body.lcars .lcars-sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 30px;
+    height: 60px;
+    background-color: var(--lcars-purple);
+    border-bottom-left-radius: var(--lcars-curve-radius);
+}
+
+/* Header Bar */
+body.lcars .lcars-header-bar {
+    background-color: var(--lcars-orange);
+    height: 40px;
+    width: 100%;
+    border-bottom-left-radius: var(--lcars-curve-radius);
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    color: black;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+/* Content Area */
+body.lcars .content {
+    padding: 20px;
+}
+
+/* Buttons */
+body.lcars .button {
+    display: inline-block;
+    background-color: var(--lcars-blue);
+    color: black;
+    padding: 10px 20px;
+    border-radius: 15px; /* Pill shape */
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    min-width: 100px;
+}
+body.lcars .button:hover {
+    background-color: var(--lcars-red);
+}
+
+body.lcars .button.primary { background-color: var(--lcars-orange); }
+body.lcars .button.secondary { background-color: var(--lcars-purple); color: white; }
+
+/* Form Inputs */
+body.lcars input, body.lcars select, body.lcars textarea {
+    background-color: #111;
+    border: 2px solid var(--lcars-blue);
+    color: var(--lcars-orange);
+    padding: 10px;
+    font-family: var(--lcars-font);
+    font-size: 18px;
+    border-radius: 10px;
+}
+
+/* Specific to Preferences Page */
+body.lcars .preference-option {
+    border: 2px solid var(--lcars-purple);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+}
+body.lcars .preference-option.selected {
+    background-color: #220022;
+    border-color: var(--lcars-orange);
+}

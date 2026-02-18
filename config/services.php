@@ -37,6 +37,23 @@ return [
 
     'piper' => [
         'token' => env('PIPER_TOKEN'),
+        'browser_sync_url' => env('PIPER_BROWSER_SYNC_URL'),
+    ],
+
+    'project_projection' => [
+        'timeout_seconds' => env('PROJECT_PROJECTION_TIMEOUT_SECONDS', 8),
+        'targets' => [
+            [
+                'name' => 'writersroom',
+                'url' => env('WRITERSROOM_PROJECT_SYNC_URL'),
+                'token' => env('WRITERSROOM_PROJECT_SYNC_TOKEN'),
+            ],
+            [
+                'name' => 'devbacklog',
+                'url' => env('DEVBACKLOG_PROJECT_SYNC_URL'),
+                'token' => env('DEVBACKLOG_PROJECT_SYNC_TOKEN'),
+            ],
+        ],
     ],
 
 ];

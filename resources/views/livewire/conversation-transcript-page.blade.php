@@ -47,6 +47,48 @@
             </div>
         @endif
 
+        <div class="callout" style="margin-top: 0.75rem;">
+            <h3 style="margin-bottom: 0.5rem;">Edit Current Transcript</h3>
+            <form wire:submit.prevent="saveTranscriptEdits">
+                <label for="editable-transcript-textarea" class="show-for-sr">Editable transcript</label>
+                <textarea
+                    id="editable-transcript-textarea"
+                    wire:model.defer="editableTranscript"
+                    rows="12"
+                    placeholder="Edit the full conversation transcript here..."
+                ></textarea>
+
+                @error('editableTranscript')
+                    <p class="form-error is-visible" style="margin-top: 0.5rem;">{{ $message }}</p>
+                @enderror
+
+                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button type="submit" class="button warning small">Save Transcript</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="callout" style="margin-top: 0.75rem;">
+            <h3 style="margin-bottom: 0.5rem;">Add to Conversation</h3>
+            <form wire:submit.prevent="addToConversation">
+                <label for="new-entry-textarea" class="show-for-sr">New conversation entry</label>
+                <textarea
+                    id="new-entry-textarea"
+                    wire:model.defer="newEntry"
+                    rows="6"
+                    placeholder="Add notes, decisions, or follow-up context..."
+                ></textarea>
+
+                @error('newEntry')
+                    <p class="form-error is-visible" style="margin-top: 0.5rem;">{{ $message }}</p>
+                @enderror
+
+                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button type="submit" class="button small">Append Entry</button>
+                </div>
+            </form>
+        </div>
+
         <div class="conversation-transcript-panel">
             <div class="markdown-content conversation-transcript-body">
                 {!! $conversationHtml !!}

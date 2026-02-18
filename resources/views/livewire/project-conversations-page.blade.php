@@ -203,10 +203,22 @@
                 </div>
                 <div class="cell shrink text-right">
                     <button
-                        wire:click="openConversationModal"
+                        wire:click="openShareUrlModal"
+                        class="button secondary"
+                    >
+                        + Add Share URL
+                    </button>
+                    <button
+                        wire:click="openChatLinkModal"
+                        class="button secondary"
+                    >
+                        + Add Chat Link
+                    </button>
+                    <button
+                        wire:click="openManualPasteModal"
                         class="button primary"
                     >
-                        + New Conversation
+                        + Paste Transcript
                     </button>
                 </div>
             </div>
@@ -219,6 +231,11 @@
                                 <strong>{{ $conversation->title ?? 'Untitled Conversation' }}</strong>
                                 @if ($conversation->source_type === 'manual_paste')
                                     <div class="subheader">Source: Manual paste</div>
+                                @elseif ($conversation->source_type === 'chat_link')
+                                    <div class="subheader">Source: Chat link (Piper browser extraction)</div>
+                                    <div class="subheader">
+                                        Link: <a href="{{ $conversation->share_url }}" target="_blank" rel="noopener noreferrer">{{ $conversation->share_url }}</a>
+                                    </div>
                                 @elseif ($conversation->share_url)
                                     <div class="subheader">
                                         Share: <a href="{{ $conversation->share_url }}" target="_blank" rel="noopener noreferrer">{{ $conversation->share_url }}</a>
@@ -261,16 +278,16 @@
                 @endforelse
             </ul>
 
-            @if ($showConversationModal)
+            @if ($showShareUrlModal)
                 <div class="reveal-overlay" style="display: block;">
                     <div
                         class="reveal small"
                         style="display: block;"
                         role="dialog"
                         aria-modal="true"
-                        wire:keydown.escape="closeConversationModal"
+                        wire:keydown.escape="closeConversationModals"
                     >
-                        <h2>Add Conversation</h2>
+                        <h2>Add Conversation by Share URL</h2>
 
                         <label>ChatGPT Share URL
                             <input
@@ -284,9 +301,79 @@
                             <p class="form-error is-visible">{{ $message }}</p>
                         @enderror
 
-                        <hr />
+                        <div class="button-group align-right">
+                            <button
+                                wire:click="closeConversationModals"
+                                class="button secondary hollow"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                wire:click="saveConversation"
+                                class="button primary"
+                            >
+                                Save Share URL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
-                        <h3 class="h5">Or paste transcript manually</h3>
+            @if ($showChatLinkModal)
+                <div class="reveal-overlay" style="display: block;">
+                    <div
+                        class="reveal small"
+                        style="display: block;"
+                        role="dialog"
+                        aria-modal="true"
+                        wire:keydown.escape="closeConversationModals"
+                    >
+                        <h2>Add Conversation by Chat Link</h2>
+
+                        <label>ChatGPT Conversation Link (non-share)
+                            <input
+                                type="text"
+                                wire:model.defer="chatConversationUrl"
+                                placeholder="https://chatgpt.com/g/g-.../c/..."
+                            />
+                        </label>
+
+                        <p class="help-text" style="margin-top: -0.25rem;">
+                            This mode queues Piper browser extraction because private conversation pages are not publicly fetchable.
+                        </p>
+
+                        @error('chatConversationUrl')
+                            <p class="form-error is-visible">{{ $message }}</p>
+                        @enderror
+
+                        <div class="button-group align-right">
+                            <button
+                                wire:click="closeConversationModals"
+                                class="button secondary hollow"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                wire:click="saveChatConversationLink"
+                                class="button primary"
+                            >
+                                Save Chat Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if ($showManualPasteModal)
+                <div class="reveal-overlay" style="display: block;">
+                    <div
+                        class="reveal small"
+                        style="display: block;"
+                        role="dialog"
+                        aria-modal="true"
+                        wire:keydown.escape="closeConversationModals"
+                    >
+                        <h2>Add Conversation by Manual Paste</h2>
 
                         <label>Title (optional)
                             <input
@@ -314,16 +401,10 @@
 
                         <div class="button-group align-right">
                             <button
-                                wire:click="closeConversationModal"
+                                wire:click="closeConversationModals"
                                 class="button secondary hollow"
                             >
                                 Cancel
-                            </button>
-                            <button
-                                wire:click="saveConversation"
-                                class="button secondary"
-                            >
-                                Save URL
                             </button>
                             <button
                                 wire:click="savePastedConversation"

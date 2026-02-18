@@ -1,0 +1,34 @@
+/* Cyberpunk Theme Fixes */
+
+/* 1. Edit Project Width - Breakout Strategy */
+body.cyberpunk .edit-project-callout,
+body.cyberpunk .project-page-container .edit-project-callout {
+    width: 80vw !important;
+    max-width: none !important;
+    min-width: 80vw !important;
+    position: relative;
+    left: 50%;
+    margin-left: -40vw !important;
+    margin-right: 0 !important;
+    flex: 1;
+    min-height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 50;
+}
+
+/* 2. Fix for White Background on Preferences Page (Foundation Override) */
+body.cyberpunk .card {
+    background-color: #0d1117 !important;
+    border: 1px solid rgba(0, 255, 255, 0.35);
+    color: #e0e0e0;
+}
+
+/* 3. Ensure Conversation Cards have dark background */
+body.cyberpunk .callout.secondary,
+body.cyberpunk .project-list-item {
+    background-color: #0d1117 !important;
+    border-color: rgba(0, 170, 255, 0.35);
+    color: #e0e0e0;
+}

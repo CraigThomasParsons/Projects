@@ -18,4 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
+$app->useStoragePath(base_path('storage_temp'));
+
 return $app;

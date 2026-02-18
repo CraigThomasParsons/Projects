@@ -10,6 +10,8 @@ Route::get('/projects/{project}', ProjectConversationsPage::class)->name('projec
 Route::get('/projects/{project}/conversations/{conversation}', ConversationTranscriptPage::class)
     ->name('conversations.show');
 
+Route::get('/preferences', \App\Livewire\Preferences::class)->name('preferences');
+
 Route::get('/debug-drivers', function () {
     return [
         'available_drivers' => PDO::getAvailableDrivers(),

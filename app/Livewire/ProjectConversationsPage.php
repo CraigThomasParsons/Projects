@@ -7,6 +7,7 @@ namespace App\Livewire;
 use App\Models\Conversation;
 use App\Models\Project;
 use App\Services\ChatGptShareImporter;
+use App\Services\PiperBrowserConversationSyncService;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 use Throwable;
@@ -24,8 +25,11 @@ class ProjectConversationsPage extends Component
     public Project $project;
     public Collection $conversations;
 
-    public bool $showConversationModal = false;
+    public bool $showShareUrlModal = false;
+    public bool $showChatLinkModal = false;
+    public bool $showManualPasteModal = false;
     public string $shareUrl = '';
+    public string $chatConversationUrl = '';
 
     public bool $showEditProjectForm = false;
     public string $editProjectName = '';
@@ -54,19 +58,42 @@ class ProjectConversationsPage extends Component
     /**
      * Open the new conversation modal.
      */
-    public function openConversationModal(): void
+    public function openShareUrlModal(): void
     {
-        // Toggle modal visibility so the overlay appears.
-        $this->showConversationModal = true;
+        // Keep only one modal open at a time to avoid overlapping overlays.
+        $this->closeConversationModals();
+        $this->showShareUrlModal = true;
     }
 
     /**
-     * Close the new conversation modal.
+     * Open the chat-link modal for Piper browser extraction flow.
      */
-    public function closeConversationModal(): void
+    public function openChatLinkModal(): void
     {
-        // Hide the modal overlay.
-        $this->showConversationModal = false;
+        // Keep only one modal open at a time to avoid overlapping overlays.
+        $this->closeConversationModals();
+        $this->showChatLinkModal = true;
+    }
+
+    /**
+     * Open the manual paste modal.
+     */
+    public function openManualPasteModal(): void
+    {
+        // Keep only one modal open at a time to avoid overlapping overlays.
+        $this->closeConversationModals();
+        $this->showManualPasteModal = true;
+    }
+
+    /**
+     * Close all conversation creation modals.
+     */
+    public function closeConversationModals(): void
+    {
+        // Hide every creation overlay so UI state is deterministic.
+        $this->showShareUrlModal = false;
+        $this->showChatLinkModal = false;
+        $this->showManualPasteModal = false;
     }
 
     /**
@@ -156,9 +183,38 @@ class ProjectConversationsPage extends Component
         // Refresh the list and reset the form for the next entry.
         $this->loadConversations();
         $this->shareUrl = '';
-        $this->closeConversationModal();
+        $this->closeConversationModals();
 
         session()->flash('success', 'Conversation saved. Use Sync to import.');
+    }
+
+    /**
+     * Persist a non-share ChatGPT conversation URL for Piper browser extraction.
+     */
+    public function saveChatConversationLink(): void
+    {
+        // Validate private conversation links produced by ChatGPT chat sessions.
+        $validatedData = $this->validate([
+            'chatConversationUrl' => [
+                'required',
+                'url',
+                'regex:/^https:\/\/chatgpt\.com\/(?:g\/g-[^\/]+\/c\/[a-z0-9\-]+|c\/[a-z0-9\-]+)/i',
+            ],
+        ]);
+
+        // Save as a separate source type so sync can route to Piper browser extraction.
+        Conversation::create([
+            'project_id' => $this->project->id,
+            'share_url' => $validatedData['chatConversationUrl'],
+            'source_type' => 'chat_link',
+        ]);
+
+        // Refresh list and clear entry form for next conversation.
+        $this->loadConversations();
+        $this->chatConversationUrl = '';
+        $this->closeConversationModals();
+
+        session()->flash('success', 'Conversation link saved. Use Sync to run Piper browser extraction.');
     }
 
     /**
@@ -182,7 +238,7 @@ class ProjectConversationsPage extends Component
         $this->loadConversations();
         $this->manualConversationTitle = '';
         $this->manualConversationContent = '';
-        $this->closeConversationModal();
+        $this->closeConversationModals();
 
         session()->flash('success', 'Pasted conversation saved.');
     }
@@ -200,13 +256,19 @@ class ProjectConversationsPage extends Component
         }
 
         try {
-            // Pull the latest content from the share URL.
-            app(ChatGptShareImporter::class)->import($conversation, $conversation->share_url);
-            session()->flash('success', 'Conversation synced.');
+            // Route sync behavior by source type to keep extraction explicit.
+            if ($conversation->source_type === 'chat_link') {
+                app(PiperBrowserConversationSyncService::class)->queueExtraction($conversation);
+                session()->flash('success', 'Piper browser extraction job queued.');
+            } else {
+                // Default behavior for public share links.
+                app(ChatGptShareImporter::class)->import($conversation, $conversation->share_url);
+                session()->flash('success', 'Conversation synced.');
+            }
         } catch (Throwable $exception) {
             // Keep the record but surface the failure so the user can retry.
             report($exception);
-            session()->flash('error', 'Failed to sync conversation.');
+            session()->flash('error', 'Failed to sync conversation: ' . $exception->getMessage());
         }
 
         // Refresh the list to reflect any imported metadata.

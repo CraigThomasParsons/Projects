@@ -5,58 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>ChatProjects</title>
+    <link rel="icon" href="/favicons/favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#2563eb">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- Theme Styles -->
+    <link id="theme-foundation" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" disabled>
+    <link id="theme-materialize" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" disabled>
+    <link id="theme-materialize-dark" rel="stylesheet" href="{{ asset('css/materialize-dark.css') }}" disabled>
+    <link id="theme-lcars" rel="stylesheet" href="{{ asset('css/lcars.css') }}" disabled>
+    <link id="theme-cyberpunk-overrides" rel="stylesheet" href="{{ asset('css/cyberpunk-overrides.css') }}" disabled>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
+    <style>
+        /* Base transition for smooth theme switching */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
 </head>
-<body class="cyberpunk">
+<body class="antialiased">
     {{ $slot }}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
             
-            const updateToggleButtons = (theme) => {
-                const buttons = document.querySelectorAll('.theme-toggle');
-                buttons.forEach(btn => {
-                    if (theme === 'cyberpunk') {
-                        btn.textContent = 'Light Mode ☀️';
-                    } else {
-                        btn.textContent = 'Dark Mode 🌙';
-                    }
+            // Function to apply theme
+            const applyTheme = () => {
+                const theme = localStorage.getItem('theme') || 'cyberpunk';
+                const mode = localStorage.getItem('mode') || 'dark';
+
+                // Reset Body Classes involved in theming
+                body.classList.remove('lcars', 'cyberpunk', 'foundation', 'materialize', 'light', 'dark');
+
+                // Enable/Disable CSS Files
+                const lcarsCss = document.getElementById('theme-lcars');
+                const foundationCss = document.getElementById('theme-foundation');
+                const materializeCss = document.getElementById('theme-materialize');
+                const materializeDarkCss = document.getElementById('theme-materialize-dark');
+                const cyberpunkOverridesCss = document.getElementById('theme-cyberpunk-overrides');
+                
+                // Helper to disable all first
+                [lcarsCss, foundationCss, materializeCss, materializeDarkCss, cyberpunkOverridesCss].forEach(link => {
+                    if(link) link.disabled = true;
                 });
-            };
 
-            // Check local storage
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme === 'light') {
-                body.classList.remove('cyberpunk');
-                updateToggleButtons('light');
-            } else if (currentTheme === 'cyberpunk') {
-                body.classList.add('cyberpunk');
-                updateToggleButtons('cyberpunk');
-            } else {
-                // Default is cyberpunk
-                updateToggleButtons('cyberpunk');
-            }
+                // Apply Logic
+                body.classList.add(theme);
 
-            // Event Delegation for Theme Toggle
-            document.addEventListener('click', (e) => {
-                if (e.target && e.target.closest('.theme-toggle')) {
-                    if (body.classList.contains('cyberpunk')) {
-                        body.classList.remove('cyberpunk');
-                        localStorage.setItem('theme', 'light');
-                        updateToggleButtons('light');
-                    } else {
-                        body.classList.add('cyberpunk');
-                        localStorage.setItem('theme', 'cyberpunk');
-                        updateToggleButtons('cyberpunk');
+                if (theme === 'lcars') {
+                    lcarsCss.disabled = false;
+                } else if (theme === 'foundation') {
+                    foundationCss.disabled = false;
+                } else if (theme === 'materialize') {
+                    materializeCss.disabled = false;
+                    body.classList.add(mode);
+                    if (mode === 'dark') {
+                        materializeDarkCss.disabled = false;
                     }
+                } else {
+                    // Cyberpunk is default/base styles in app.css
+                    // Enable overrides for fixes
+                    cyberpunkOverridesCss.disabled = false;
                 }
+            };
+            
+            // Apply on load
+            applyTheme();
+
+            // Listen for changes from Preferences page
+            window.addEventListener('theme-changed', (e) => {
+                applyTheme();
             });
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     @livewireScripts
 </body>
