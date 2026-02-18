@@ -75,6 +75,92 @@
    text-shadow: none !important;
 }
 
+/* Foundation -> Materialize Bridge for Buttons */
+:is(.dark) body.materialize .button,
+body.materialize .button {
+   border: none;
+   border-radius: 2px;
+   display: inline-block;
+   height: 36px;
+   line-height: 36px;
+   padding: 0 16px;
+   text-transform: uppercase;
+   vertical-align: middle;
+   -webkit-tap-highlight-color: transparent;
+   font-size: 14px;
+   outline: 0;
+   text-decoration: none;
+   color: #fff;
+   background-color: #26a69a;
+   /* Materialize Default Teal */
+   text-align: center;
+   letter-spacing: .5px;
+   transition: background-color .2s ease-out;
+   cursor: pointer;
+}
+
+:is(.dark) body.materialize .button:hover {
+   background-color: #2bbbad;
+}
+
+/* Tokyo Night Button Overrides */
+:is(.dark) body.materialize .button {
+   background-color: #7aa2f7;
+   /* Tokyo Blue */
+   color: #1a1b26;
+   /* Dark Text for Contrast */
+}
+
+:is(.dark) body.materialize .button:hover {
+   background-color: #bb9af7;
+   /* Tokyo Purple */
+}
+
+/* Button Sizing */
+:is(.dark) body.materialize .button.small,
+body.materialize .button.small {
+   height: 32.4px;
+   line-height: 32.4px;
+   font-size: 13px;
+}
+
+:is(.dark) body.materialize .button.tiny,
+body.materialize .button.tiny {
+   height: 24px;
+   line-height: 24px;
+   font-size: 10px;
+   padding: 0 10px;
+}
+
+:is(.dark) body.materialize .button.large,
+body.materialize .button.large {
+   height: 54px;
+   line-height: 54px;
+   font-size: 15px;
+   padding: 0 28px;
+}
+
+/* Button Colors (Foundation Mappings) */
+:is(.dark) body.materialize .button.secondary,
+body.materialize .button.secondary {
+   background-color: #a6a6a6;
+   color: #fff;
+}
+
+:is(.dark) body.materialize .button.secondary:hover {
+   background-color: #8a8a8a;
+}
+
+:is(.dark) body.materialize .button.secondary {
+   background-color: #414868;
+   /* Tokyo Slate */
+   color: #c0caf5;
+}
+
+:is(.dark) body.materialize .button.secondary:hover {
+   background-color: #565f89;
+}
+
 :is(.dark) body.materialize :not(pre)>code {
    @apply bg-gray-800 text-teal-300 px-1 py-0.5 rounded text-sm;
 }
