@@ -28,6 +28,35 @@
     @apply border-indigo-500 ring-1 ring-indigo-500;
 }
 
+/* Base Button Styles for CCDF */
+:is(.dark) body.ccdf .button,
+body.ccdf .button {
+    display: inline-block;
+    padding: 0.85em 1em;
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    text-align: center;
+    text-decoration: none;
+    background-color: #4b5563;
+    /* Gray 600 */
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+:is(.dark) body.ccdf .button.small,
+body.ccdf .button.small {
+    font-size: 0.75rem;
+    padding: 0.6em 0.8em;
+}
+
+:is(.dark) body.ccdf .button:hover {
+    background-color: #374151;
+    /* Gray 700 */
+}
+
 :is(.dark) body.ccdf .button.secondary {
     @apply bg-gray-700 text-white hover:bg-gray-600 border-gray-600;
 }
