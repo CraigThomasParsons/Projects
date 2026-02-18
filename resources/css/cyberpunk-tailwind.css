@@ -581,9 +581,7 @@ body.cyberpunk .card {
     color: #e0e0e0;
 }
 
-/* 3. Ensure Conversation Cards have dark background */
-color: #e0e0e0;
-}
+
 
 /* Code Block Fix - Cyberpunk Style */
 body.cyberpunk pre,

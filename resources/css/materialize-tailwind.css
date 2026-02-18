@@ -8,9 +8,12 @@
    (loaded via CDN or separate file) for the base components.
 */
 
-/* Materialize Dark Mode Overrides */
+/* Materialize Dark Mode Overrides - Tokyo Night Theme */
 :is(.dark) body.materialize {
-   @apply bg-gray-950 text-white;
+   background-color: #1a1b26;
+   /* Tokyo Night Background */
+   color: #c0caf5;
+   /* Tokyo Night Foreground */
 }
 
 :is(.dark) body.materialize h1,
@@ -19,24 +22,38 @@
 :is(.dark) body.materialize h4,
 :is(.dark) body.materialize h5,
 :is(.dark) body.materialize h6 {
-   @apply text-gray-100;
+   color: #7aa2f7;
+   /* Tokyo Night Blue */
 }
 
 :is(.dark) body.materialize .text-muted,
 :is(.dark) body.materialize .text-secondary,
-:is(.dark) body.materialize small {
-   @apply text-gray-400;
+:is(.dark) body.materialize small,
+:is(.dark) body.materialize label {
+   color: #9aa5ce;
+   /* Tokyo Night Terminal Black/Grey */
 }
 
 :is(.dark) body.materialize .card,
 :is(.dark) body.materialize .panel {
-   @apply bg-gray-900 border-gray-800;
+   background-color: #24283b;
+   /* Tokyo Night Terminal Background */
+   border-color: #414868;
+   /* Tokyo Night Terminal Black */
 }
 
 :is(.dark) body.materialize input,
 :is(.dark) body.materialize textarea,
 :is(.dark) body.materialize select {
-   @apply bg-gray-900 text-white border-gray-700 placeholder-gray-500;
+   background-color: #16161e;
+   /* Darker input bg */
+   color: #c0caf5;
+   border-color: #565f89;
+}
+
+:is(.dark) body.materialize input::placeholder,
+:is(.dark) body.materialize textarea::placeholder {
+   color: #565f89;
 }
 
 /* Code Block Fix */
