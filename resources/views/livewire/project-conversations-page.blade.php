@@ -12,9 +12,7 @@
         </div>
         <div class="cell auto"></div> {{-- Spacer --}}
         <div class="cell shrink">
-            <button class="button hollow secondary small theme-toggle" style="margin-right: 0.5rem;">
-                Light Mode ☀️
-            </button>
+
             <button
                 class="button hollow secondary small"
                 wire:click="openEditProjectForm"
@@ -157,7 +155,7 @@
                 <div class="cell">
                     <h1 class="h2 text-glow">{{ $project->name }}</h1>
                     @if ($project->description)
-                        <div class="project-description markdown-content">
+                        <div class="project-description markdown-content prose prose-slate max-w-none dark:prose-invert">
                             {!! Str::markdown($project->description) !!}
                         </div>
                     @endif

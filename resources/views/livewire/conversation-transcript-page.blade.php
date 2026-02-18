@@ -90,7 +90,7 @@
         </div>
 
         <div class="conversation-transcript-panel">
-            <div class="markdown-content conversation-transcript-body">
+            <div class="markdown-content conversation-transcript-body prose prose-slate max-w-none dark:prose-invert">
                 {!! $conversationHtml !!}
             </div>
         </div>

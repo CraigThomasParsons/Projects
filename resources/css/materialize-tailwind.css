@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+   Materialize Bridge
+   This file enables Tailwind utilities while relying on the external Materialize CSS
+   (loaded via CDN or separate file) for the base components.
+*/
+
+/* Materialize Dark Mode Overrides */
+:is(.dark) body.materialize {
+   @apply bg-gray-950 text-white;
+}
+
+:is(.dark) body.materialize h1,
+:is(.dark) body.materialize h2,
+:is(.dark) body.materialize h3,
+:is(.dark) body.materialize h4,
+:is(.dark) body.materialize h5,
+:is(.dark) body.materialize h6 {
+   @apply text-gray-100;
+}
+
+:is(.dark) body.materialize .text-muted,
+:is(.dark) body.materialize .text-secondary,
+:is(.dark) body.materialize small {
+   @apply text-gray-400;
+}
+
+:is(.dark) body.materialize .card,
+:is(.dark) body.materialize .panel {
+   @apply bg-gray-900 border-gray-800;
+}
+
+:is(.dark) body.materialize input,
+:is(.dark) body.materialize textarea,
+:is(.dark) body.materialize select {
+   @apply bg-gray-900 text-white border-gray-700 placeholder-gray-500;
+}
+
+/* Code Block Fix */
+:is(.dark) body.materialize pre,
+:is(.dark) body.materialize code {
+   font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+:is(.dark) body.materialize pre {
+   @apply bg-gray-800 text-gray-200 p-4 rounded-lg border border-gray-700 overflow-x-auto mb-4;
+}
+
+/* Ensure ALL children of pre (code, spans) inherit the background or are transparent */
+:is(.dark) body.materialize pre *,
+:is(.dark) body.materialize pre code,
+:is(.dark) body.materialize pre span {
+   background-color: transparent !important;
+   color: inherit !important;
+   text-shadow: none !important;
+}
+
+:is(.dark) body.materialize :not(pre)>code {
+   @apply bg-gray-800 text-teal-300 px-1 py-0.5 rounded text-sm;
+}

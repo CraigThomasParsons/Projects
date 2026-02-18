@@ -9,6 +9,7 @@ export default {
         './resources/**/*.js',
         './resources/**/*.vue',
     ],
+    darkMode: 'selector',
     theme: {
         extend: {
             fontFamily: {
@@ -16,5 +17,7 @@ export default {
             },
         },
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/typography'),
+    ],
 };

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* LCARS Theme / Star Trek TNG Style */
 :root {
     --lcars-orange: #ff9900;
@@ -14,7 +18,8 @@ body.lcars {
     background-color: var(--lcars-bg);
     color: var(--lcars-text);
     font-family: var(--lcars-font);
-    font-size: 20px;
+    font-size: 18px;
+    /* Reduced from 20px */
     letter-spacing: 1px;
     text-transform: uppercase;
     margin: 0;
@@ -30,12 +35,49 @@ body.lcars h3 {
 }
 
 body.lcars a {
-    color: var(--lcars-blue);
-    text-decoration: none;
+    color: #ce9aff;
+    /* Lighter Purple for better contrast on black */
+    text-decoration: underline;
+    text-decoration-color: var(--lcars-orange);
 }
 
 body.lcars a:hover {
     color: var(--lcars-red);
+    text-decoration: none;
+}
+
+/* Code Blocks (ChatGPT Style) */
+body.lcars pre,
+body.lcars code {
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+body.lcars pre {
+    background-color: #2f2f2f !important;
+    /* ChatGPT-like dark gray */
+    color: #e0e0e0 !important;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid #444;
+    margin-bottom: 1rem;
+}
+
+/* Ensure ALL children of pre (code, spans) inherit the background or are transparent */
+body.lcars pre *,
+body.lcars pre code,
+body.lcars pre span {
+    background-color: transparent !important;
+    color: inherit !important;
+    text-shadow: none !important;
+}
+
+/* Inline code not inside pre */
+body.lcars :not(pre)>code {
+    background-color: #2f2f2f !important;
+    color: #e0e0e0 !important;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
 }
 
 /* LCARS Layout Structure */
@@ -79,7 +121,8 @@ body.lcars .lcars-header-bar {
     padding-left: 20px;
     color: black;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 20px;
+    /* Reduced from 24px */
 }
 
 /* Content Area */
@@ -119,17 +162,19 @@ body.lcars .button.secondary {
 body.lcars input,
 body.lcars select,
 body.lcars textarea {
-    background-color: #111;
+    background-color: #000000;
     border: 2px solid var(--lcars-blue);
     color: var(--lcars-orange);
     padding: 10px;
     font-family: var(--lcars-font);
-    font-size: 18px;
+    font-size: 16px;
+    /* Reduced from 18px */
     border-radius: 10px;
 }
 
 /* Specific to Preferences Page */
 body.lcars .preference-option {
+    background-color: #000000;
     border: 2px solid var(--lcars-purple);
     padding: 20px;
     margin-bottom: 20px;
@@ -139,28 +184,73 @@ body.lcars .preference-option {
 }
 
 body.lcars .preference-option.selected {
-    background-color: #220022;
+    background-color: #000000;
+    /* Keep it black but change border */
     border-color: var(--lcars-orange);
+    box-shadow: 0 0 10px var(--lcars-orange);
+    /* Add glow to indicate selection */
 }
 
-/* LCARS Card Override */
-body.lcars .card {
-    background-color: #000 !important;
+/* LCARS Card & Container Override */
+body.lcars .card,
+body.lcars .callout,
+body.lcars .project-list-item,
+body.lcars .modal,
+body.lcars .reveal {
+    background-color: #000000 !important;
+    background-image: none !important;
+    /* Remove any gradients/images */
     color: var(--lcars-orange) !important;
-    border: 2px solid var(--lcars-purple);
-    border-radius: var(--lcars-curve-radius);
+    border: 2px solid var(--lcars-orange) !important;
+    border-radius: var(--lcars-curve-radius) !important;
+    box-shadow: none !important;
+    /* Flat look */
+    padding: 2rem !important;
+    /* Ensure text doesn't touch borders */
+    margin-bottom: 1.5rem !important;
+    /* Space between items */
 }
 
-body.lcars .card h2 {
+/* Hover effects for interactive items */
+body.lcars .project-list-item:hover,
+body.lcars .card:hover {
+    border-color: var(--lcars-red) !important;
+    box-shadow: 0 0 10px var(--lcars-red) !important;
+    /* Neon glow on hover */
+}
+
+body.lcars .card h1,
+body.lcars .card h2,
+body.lcars .card h3,
+body.lcars .card h4,
+body.lcars .card h5,
+body.lcars .card h6,
+body.lcars .callout h2,
+body.lcars .project-list-item strong {
+    color: var(--lcars-red) !important;
+    text-shadow: none !important;
+}
+
+body.lcars .card label,
+body.lcars .callout label {
     color: var(--lcars-orange) !important;
 }
 
-body.lcars .card label {
+/* Specific fix for the Preferences radio buttons text which might be failing contrast */
+body.lcars .card span {
     color: var(--lcars-orange) !important;
 }
 
 body.lcars .card label:hover {
-    background-color: #220022 !important;
-    /* Dark purple on hover */
+    background-color: #000 !important;
     color: var(--lcars-red) !important;
 }
+
+/* Force specific text colors for visibility */
+body.lcars .text-muted,
+body.lcars .subheader {
+    color: var(--lcars-blue) !important;
+    /* Use LCARS blue for secondary text instead of gray */
+}
+
+/* LCARS is inherently dark, so likely no changes needed for .dark mode specifically. */

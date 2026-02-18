@@ -18,10 +18,13 @@
 
     <!-- Theme Styles -->
     <link id="theme-foundation" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" disabled>
+    <link id="theme-foundation-tailwind" rel="stylesheet" href="{{ asset('css/foundation-tailwind.css') }}" disabled>
     <link id="theme-materialize" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" disabled>
+    <link id="theme-materialize-tailwind" rel="stylesheet" href="{{ asset('css/materialize-tailwind.css') }}" disabled>
     <link id="theme-materialize-dark" rel="stylesheet" href="{{ asset('css/materialize-dark.css') }}" disabled>
-    <link id="theme-lcars" rel="stylesheet" href="{{ asset('css/lcars.css') }}" disabled>
-    <link id="theme-cyberpunk-overrides" rel="stylesheet" href="{{ asset('css/cyberpunk-overrides.css') }}" disabled>
+    <link id="theme-lcars" rel="stylesheet" href="{{ asset('css/lcars-tailwind.css') }}" disabled>
+    <link id="theme-cyberpunk-overrides" rel="stylesheet" href="{{ asset('css/cyberpunk-tailwind.css') }}" disabled>
+    <link id="theme-ccdf" rel="stylesheet" href="{{ asset('css/ccdf.css') }}" disabled>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -51,28 +54,42 @@
                 // Enable/Disable CSS Files
                 const lcarsCss = document.getElementById('theme-lcars');
                 const foundationCss = document.getElementById('theme-foundation');
+                const foundationTailwindCss = document.getElementById('theme-foundation-tailwind');
                 const materializeCss = document.getElementById('theme-materialize');
+                const materializeTailwindCss = document.getElementById('theme-materialize-tailwind');
                 const materializeDarkCss = document.getElementById('theme-materialize-dark');
                 const cyberpunkOverridesCss = document.getElementById('theme-cyberpunk-overrides');
+                const ccdfCss = document.getElementById('theme-ccdf');
                 
                 // Helper to disable all first
-                [lcarsCss, foundationCss, materializeCss, materializeDarkCss, cyberpunkOverridesCss].forEach(link => {
+                [lcarsCss, foundationCss, foundationTailwindCss, materializeCss, materializeTailwindCss, materializeDarkCss, cyberpunkOverridesCss, ccdfCss].forEach(link => {
                     if(link) link.disabled = true;
                 });
 
                 // Apply Logic
+                // Tailwind Dark Mode Logic
+                if (mode === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+
                 body.classList.add(theme);
 
                 if (theme === 'lcars') {
                     lcarsCss.disabled = false;
                 } else if (theme === 'foundation') {
                     foundationCss.disabled = false;
+                    foundationTailwindCss.disabled = false;
                 } else if (theme === 'materialize') {
                     materializeCss.disabled = false;
+                    materializeTailwindCss.disabled = false;
                     body.classList.add(mode);
                     if (mode === 'dark') {
                         materializeDarkCss.disabled = false;
                     }
+                } else if (theme === 'ccdf') {
+                    ccdfCss.disabled = false;
                 } else {
                     // Cyberpunk is default/base styles in app.css
                     // Enable overrides for fixes

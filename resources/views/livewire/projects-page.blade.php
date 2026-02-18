@@ -5,33 +5,7 @@
         </div>
         <div class="cell small-6 text-right">
                 <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem;">
-                    <div x-data="{
-                        theme: localStorage.getItem('theme') || 'cyberpunk',
-                        mode: localStorage.getItem('mode') || 'dark',
-                        toggleMode() {
-                            this.mode = this.mode === 'light' ? 'dark' : 'light';
-                            localStorage.setItem('mode', this.mode);
-                            window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: this.theme, mode: this.mode } }));
-                        },
-                        init() {
-                            window.addEventListener('theme-changed', (e) => {
-                               if(e.detail) {
-                                   this.theme = e.detail.theme || this.theme;
-                                   this.mode = e.detail.mode || this.mode;
-                               } else {
-                                   this.theme = localStorage.getItem('theme');
-                                   this.mode = localStorage.getItem('mode');
-                               }
-                            });
-                        }
-                    }" x-show="theme === 'materialize'" style="display: none;">
-                        <button 
-                            @click="toggleMode()"
-                            class="button hollow secondary" 
-                            style="margin-bottom: 0;">
-                            <span x-text="mode === 'light' ? 'Dark Mode 🌙' : 'Light Mode ☀️'"></span>
-                        </button>
-                    </div>
+
 
                     <a href="{{ route('preferences') }}" class="button hollow secondary" style="margin-bottom: 0;">
                         Theme Settings ⚙️
