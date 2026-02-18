@@ -97,6 +97,8 @@ body.materialize .button {
    letter-spacing: .5px;
    transition: background-color .2s ease-out;
    cursor: pointer;
+   margin: 5px;
+   /* Added spacing per user request */
 }
 
 :is(.dark) body.materialize .button:hover {

@@ -1,8 +1,7 @@
 <div class="project-page-container">
     {{-- HEADER: Back & Edit --}}
-    <div class="page-header grid-x grid-padding-x align-middle"
-        style="padding:5px;">
-        <div class="cell shrink">
+    <div class="page-header flex justify-between items-center p-2 mb-4">
+        <div>
             <a
                 href="{{ route('projects.index') }}"
                 class="button hollow secondary small"
@@ -10,9 +9,7 @@
                 &#x2190; Back to Projects
             </a>
         </div>
-        <div class="cell auto"></div> {{-- Spacer --}}
-        <div class="cell shrink">
-
+        <div>
             <button
                 class="button hollow secondary small"
                 wire:click="openEditProjectForm"

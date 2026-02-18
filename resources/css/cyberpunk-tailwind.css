@@ -133,6 +133,8 @@ body.cyberpunk .button {
     line-height: 1;
     cursor: pointer;
     border-radius: 0;
+    margin: 5px;
+    /* Added spacing to separate clustered buttons */
 }
 
 body.cyberpunk .button.tiny {

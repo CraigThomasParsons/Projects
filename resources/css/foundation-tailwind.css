@@ -33,6 +33,12 @@
    @apply bg-slate-700 text-white hover:bg-slate-600;
 }
 
+/* Generic spacing for Foundation buttons to prevent clustering */
+:is(.dark) body.foundation .button,
+body.foundation .button {
+   margin: 5px;
+}
+
 :is(.dark) body.foundation a {
    @apply text-blue-400 hover:text-blue-300;
 }

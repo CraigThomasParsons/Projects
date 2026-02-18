@@ -44,6 +44,8 @@ body.ccdf .button {
     /* Gray 600 */
     color: #fff;
     transition: all 0.2s ease;
+    margin: 5px;
+    /* Added spacing per user request */
 }
 
 :is(.dark) body.ccdf .button.small,
