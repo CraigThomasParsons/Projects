@@ -164,3 +164,68 @@ body.lcars .card label:hover {
     /* Dark purple on hover */
     color: var(--lcars-red) !important;
 }
+
+/* Materialize NavBar LCARS Overrides */
+body.lcars nav {
+    background-color: var(--lcars-bg);
+    box-shadow: none;
+    height: auto;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    line-height: inherit;
+}
+
+body.lcars nav .nav-wrapper {
+    background-color: var(--lcars-bg);
+    border: 5px solid var(--lcars-orange);
+    border-radius: var(--lcars-curve-radius);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top-right-radius: 0;
+    min-height: 50px;
+}
+
+body.lcars nav .brand-logo {
+    color: var(--lcars-purple);
+    font-family: var(--lcars-font);
+    font-size: 32px;
+    font-weight: bold;
+    position: static;
+    transform: none;
+    margin-right: auto;
+}
+
+body.lcars nav ul {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body.lcars nav ul li {
+    display: block;
+    height: 100%;
+}
+
+body.lcars nav ul a {
+    color: var(--lcars-orange);
+    font-family: var(--lcars-font);
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: color 0.2s, background-color 0.2s;
+    border-radius: var(--lcars-curve-radius);
+    margin: 4px 5px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    background-color: #222;
+}
+
+body.lcars nav ul a:hover {
+    background-color: var(--lcars-blue) !important;
+    color: #fff !important;
+}

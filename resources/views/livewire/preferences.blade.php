@@ -1,115 +1,117 @@
-<div class="preferences-page" x-data="{
-    theme: localStorage.getItem('theme') || 'cyberpunk',
-    mode: localStorage.getItem('mode') || 'dark',
+<div class="tc-page" x-data="themeCustomizer">
+    {{-- Back --}}
+    <a href="{{ route('projects.index') }}" class="tc-back">&larr; Back to Projects</a>
 
-    setTheme(newTheme) {
-        this.theme = newTheme;
-        localStorage.setItem('theme', newTheme);
-        this.applyTheme();
-    },
+    <h1 class="h2">Theme Customizer</h1>
 
-    setMode(newMode) {
-        this.mode = newMode;
-        localStorage.setItem('mode', newMode);
-        this.applyTheme();
-    },
-
-    applyTheme() {
-        // Remove all theme classes from body
-        document.body.classList.remove('lcars', 'cyberpunk', 'foundation', 'materialize', 'light', 'dark');
-
-        // Add selected theme class
-        document.body.classList.add(this.theme);
-
-        // Handle Mode (Light/Dark)
-        if (['materialize', 'foundation', 'ccdf'].includes(this.theme)) {
-            if (this.mode === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-            // Materialize specific handling (keep on body for materialize source css compabibility if needed, but standardizing on html is safer for tailwind)
-            if (this.theme === 'materialize') {
-                 // Materialize usually uses body classes? leaving strictly for materialize css compat if it relies on it.
-                 // But wait, the previous code put it on body.
-                 document.body.classList.add(this.mode);
-            }
-        }
-
-        // Trigger a custom event for other components if needed
-        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: this.theme, mode: this.mode } }));
-        
-        // Force reload css if needed by dispatching to layout listener
-        // (Layout listener implementation in app.blade.php will handle CSS swapping)
-    }
-}" x-init="applyTheme()">
-
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold mb-6 ml-4 md:ml-0">User Preferences</h1>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="hidden md:block col-span-1"></div> <!-- Spacer to move content right -->
-            <div class="col-span-1 md:col-span-2">
-            
-            <!-- Theme Selection -->
-            <div class="card p-6 border rounded-lg shadow-lg bg-opacity-20 bg-gray-800">
-                <h2 class="text-xl font-semibold mb-4">Select Theme</h2>
-
-                <div class="space-y-4">
-                    <!-- LCARS -->
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="theme" value="lcars" x-model="theme" @change="setTheme('lcars')" class="form-radio h-5 w-5 text-orange-500">
-                        <span>LCARS Inspired</span>
-                    </label>
-
-                    <!-- Cyberpunk -->
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="theme" value="cyberpunk" x-model="theme" @change="setTheme('cyberpunk')" class="form-radio h-5 w-5 text-blue-500">
-                        <span>Cyberpunk (Default)</span>
-                    </label>
-
-                    <!-- Foundation -->
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="theme" value="foundation" x-model="theme" @change="setTheme('foundation')" class="form-radio h-5 w-5 text-gray-500">
-                        <span>Foundation</span>
-                    </label>
-
-                    <!-- Materialize -->
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="theme" value="materialize" x-model="theme" @change="setTheme('materialize')" class="form-radio h-5 w-5 text-teal-500">
-                        <span>Materialize CSS</span>
-                    </label>
-
-                    <!-- CCDF (Standard) -->
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="theme" value="ccdf" x-model="theme" @change="setTheme('ccdf')" class="form-radio h-5 w-5 text-indigo-500">
-                        <span>CCDF (Standard)</span>
-                    </label>
+    <div class="tc-columns">
+        {{-- ═══ Left: Controls ═══ --}}
+        <div>
+            {{-- Preset Cards --}}
+            <div class="tc-section">
+                <h3>Theme Presets</h3>
+                <div class="tc-presets">
+                    <template x-for="p in presets()" :key="p.key">
+                        <div class="tc-preset-card"
+                             :class="{ 'active': theme === p.key }"
+                             @click="selectPreset(p.key)">
+                            <div class="tc-card-header">
+                                <span class="tc-card-icon" x-text="p.icon"></span>
+                                <span class="tc-card-name" x-text="p.name"></span>
+                            </div>
+                            <div class="tc-card-desc" x-text="p.description"></div>
+                            <div class="tc-swatch-row">
+                                <template x-for="(c, i) in p.swatches" :key="i">
+                                    <div class="tc-swatch" :style="'background:' + c"></div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
 
-            <!-- Mode Selection (Light/Dark) -->
-            <div class="card p-6 border rounded-lg shadow-lg bg-opacity-20 bg-gray-800" x-show="['materialize', 'foundation', 'ccdf'].includes(theme)" x-transition>
-                <h2 class="text-xl font-semibold mb-4">Select Mode</h2>
-                <div class="space-y-4">
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="mode" value="light" x-model="mode" @change="setMode('light')" class="form-radio h-5 w-5 text-yellow-500">
-                        <span>Light Mode</span>
-                    </label>
-
-                    <label class="flex items-center space-x-3 cursor-pointer p-3 rounded hover:bg-white hover:bg-opacity-10 transition">
-                        <input type="radio" name="mode" value="dark" x-model="mode" @change="setMode('dark')" class="form-radio h-5 w-5 text-gray-800">
-                        <span>Dark Mode</span>
-                    </label>
+            {{-- Mode Toggle --}}
+            <div class="tc-section" x-show="currentPreset().supportsModes" x-transition>
+                <h3>Color Mode</h3>
+                <div class="tc-mode-toggle">
+                    <button :class="{ 'active': mode === 'light' }" @click="setMode('light')">
+                        ☀️ Light
+                    </button>
+                    <button :class="{ 'active': mode === 'dark' }" @click="setMode('dark')">
+                        🌙 Dark
+                    </button>
                 </div>
             </div>
+
+            {{-- Color Pickers (for themes with CSS variable overrides) --}}
+            <div class="tc-section" x-show="overrideEntries().length > 0" x-transition>
+                <h3>Color Overrides</h3>
+                <div class="tc-color-grid">
+                    <template x-for="[prop, val] in overrideEntries()" :key="prop">
+                        <div class="tc-color-item" :class="{ 'tc-cp-item': theme === 'cyberpunk' }">
+                            <input type="color"
+                                   :value="val"
+                                   @input="updateOverride(prop, $event.target.value)">
+                            <label x-text="prop.replace(/^--(?:sr-|lcars-|wr-)?/, '')"
+                                   :style="theme === 'cyberpunk'
+                                       ? 'color:' + val + ';background:' + contrastBg(val) + ';padding:1px 7px;border-radius:4px;transition:background 0.2s,color 0.2s'
+                                       : ''"></label>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            {{-- Actions --}}
+            <div class="tc-actions">
+                <button class="tc-btn" @click="exportConfig()">
+                    📋 Export Config
+                </button>
+                <button class="tc-btn" @click="importConfig()">
+                    📂 Import Config
+                </button>
+                <button class="tc-btn danger"
+                        @click="resetOverrides()"
+                        x-show="overrideEntries().length > 0">
+                    🔄 Reset Overrides
+                </button>
+            </div>
+
+            <livewire:project-aliases-manager />
         </div>
 
+        {{-- ═══ Right: Live Preview ═══ --}}
+        <div class="tc-preview">
+            <h3>Live Preview</h3>
+            <div class="tc-preview-frame">
+                {{-- Simulated header --}}
+                <div class="tc-preview-header">
+                    <strong style="font-size: 0.85rem;">📬 ChatProjects</strong>
+                    <div class="nav-links">
+                        <span>Projects</span>
+                        <span>Preferences</span>
+                    </div>
+                </div>
 
-
-        <div class="mt-8 text-center">
-            <a href="{{ route('projects.index') }}" class="button secondary">Back to Projects</a>
-        </div>
+                {{-- Simulated body --}}
+                <div class="tc-preview-body">
+                    <div class="tc-preview-card">
+                        <div class="card-title">My Laravel App</div>
+                        <div class="card-sub">3 conversations · Updated 2h ago</div>
+                    </div>
+                    <div class="tc-preview-card">
+                        <div class="card-title">RTS Colony Generator</div>
+                        <div class="card-sub">7 conversations · Updated 5d ago</div>
+                    </div>
+                    <div class="tc-preview-btns">
+                        <span class="btn-mock">+ New Project</span>
+                        <span class="btn-mock">Sync All</span>
+                    </div>
+                    <input class="tc-preview-input" type="text" placeholder="Search projects..." disabled>
+                </div>
+            </div>
         </div>
     </div>
+
+    {{-- Toast --}}
+    <div class="tc-toast" x-show="toast" x-transition x-text="toast"></div>
 </div>

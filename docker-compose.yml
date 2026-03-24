@@ -94,4 +94,3 @@ services:
     shm_size: 2gb
     ports:
       - "4445:4444"
-

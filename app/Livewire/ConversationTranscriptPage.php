@@ -21,9 +21,13 @@ class ConversationTranscriptPage extends Component
 {
     public Project $project;
     public Conversation $conversation;
+
     public string $conversationHtml = '';
     public string $newEntry = '';
     public string $editableTranscript = '';
+    public string $theme = 'cyberpunk';
+    public string $pageHeaderClasses = 'button hollow secondary';
+    public string $callOutStyle = '';
 
     /**
      * Initialize the transcript view with the requested project and conversation.
@@ -39,11 +43,39 @@ class ConversationTranscriptPage extends Component
         $this->project = $project;
         $this->conversation = $conversation;
 
+        // Read theme from cookie so server-side logic can be theme-aware on initial load.
+        $this->theme = request()->cookie('theme', 'cyberpunk');
+
         // Build the HTML once so rendering stays fast.
         $this->conversationHtml = $this->buildConversationHtml($conversation->raw_content);
 
         // Initialize editable text area with the current stored transcript.
         $this->editableTranscript = (string) ($conversation->raw_content ?? '');
+
+        // Apply theme-specific styles for the callout sections.
+        $this->callOutStyle = $this->initializeCalloutStyles();
+
+        if ($this->theme !== 'writers-room') {
+            $this->pageHeaderClasses .= ' small ';
+        }
+    }
+
+    /**
+     * Determine CSS styles for callout sections based on the active theme.
+     *
+     * @return string $stylespace-separated list of CSS styles to apply to callout sections
+     */
+    protected function initializeCalloutStyles(): string
+    {
+        // Apply theme-specific styles for the callout sections.
+        $callOutStyles = ['margin-top: 0.75rem;'];
+    
+        // Seems I built this exclusively for the foundation theme, but it's possible other themes could use it too so I'll keep it flexible.
+        if ($this->theme === 'foundation') {
+            $callOutStyles[] = ' background-color: #334155;';
+        }
+
+        return implode('; ', $callOutStyles);
     }
 
     /**
@@ -118,6 +150,15 @@ class ConversationTranscriptPage extends Component
         $this->conversationHtml = $this->buildConversationHtml($updatedContent);
 
         session()->flash('success', 'Conversation transcript saved.');
+    }
+
+    /**
+     * Sync the active theme from the client after a live theme switch.
+     */
+    public function setTheme(string $theme): void
+    {
+        $allowed = ['cyberpunk', 'foundation', 'lcars', 'writers-room'];
+        $this->theme = in_array($theme, $allowed, true) ? $theme : 'cyberpunk';
     }
 
     /**

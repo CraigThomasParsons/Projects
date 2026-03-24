@@ -60,6 +60,42 @@ final class PiperProjectInputController extends Controller
     }
 
     /**
+     * Receive and store Piper-generated project context documentation.
+     */
+    public function updateContext(Request $request, Project $project): JsonResponse
+    {
+        // Enforce token auth
+        $this->authorizeRequest($request);
+
+        // Define expected Piper output fields
+        $fields = [
+            'readme',
+            'goals',
+            'context',
+            'architecture',
+            'tys',
+            'recommendedstack'
+        ];
+
+        // Ensure we only grab valid fields from the request, falling back to null
+        $updates = [];
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                $updates[$field] = $request->input($field);
+            }
+        }
+
+        // Apply and save
+        $project->update($updates);
+
+        return response()->json([
+            'message' => 'Project context successfully updated.',
+            'project_id' => $project->id,
+            'updated_fields' => array_keys($updates)
+        ]);
+    }
+
+    /**
      * Validate Piper token from either Bearer auth or custom header.
      */
     private function authorizeRequest(Request $request): void

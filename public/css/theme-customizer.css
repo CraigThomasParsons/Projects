@@ -1,0 +1,366 @@
+/* ─── Theme Customizer Page Styles ──────────────────────────── */
+
+.tc-page {
+    padding: 1.5rem;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.tc-page h1 {
+    margin-bottom: 1.5rem;
+}
+
+/* ─── Layout: Two-column (controls | preview) ─────────────── */
+.tc-columns {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .tc-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ─── Preset Cards ─────────────────────────────────────────── */
+.tc-presets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tc-preset-card {
+    padding: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tc-preset-card:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tc-preset-card.active {
+    border-color: #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+}
+
+.tc-preset-card .tc-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tc-preset-card .tc-card-icon {
+    font-size: 1.4rem;
+}
+
+.tc-preset-card .tc-card-name {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.tc-preset-card .tc-card-desc {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.tc-swatch-row {
+    display: flex;
+    gap: 4px;
+}
+
+.tc-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ─── Controls Section ─────────────────────────────────────── */
+.tc-section {
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tc-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    margin-bottom: 1rem;
+}
+
+/* Color picker grid */
+.tc-color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.tc-color-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tc-color-item label {
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.tc-color-item input[type="color"] {
+    width: 36px;
+    height: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.tc-color-item input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.tc-color-item input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 3px;
+}
+
+.tc-color-item input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 3px;
+}
+
+/* ─── Cyberpunk circular color picker ─────────────────────── */
+.tc-cp-item input[type="color"] {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 255, 255, 0.35);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.tc-cp-item input[type="color"]:hover {
+    border-color: rgba(0, 255, 255, 0.8);
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.45);
+}
+
+.tc-cp-item input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border-radius: 50%;
+}
+
+.tc-cp-item input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+.tc-cp-item input[type="color"]::-moz-color-swatch {
+    border: none;
+    border-radius: 50%;
+}
+
+/* ─── Mode Toggle ──────────────────────────────────────────── */
+.tc-mode-toggle {
+    display: inline-flex;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tc-mode-toggle button {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: inherit;
+}
+
+.tc-mode-toggle button.active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ─── Actions Row ──────────────────────────────────────────── */
+.tc-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.tc-actions .tc-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.2s;
+    color: inherit;
+}
+
+.tc-actions .tc-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.tc-actions .tc-btn.danger {
+    border-color: rgba(255, 80, 80, 0.3);
+    color: #ff6b6b;
+}
+
+.tc-actions .tc-btn.danger:hover {
+    background: rgba(255, 80, 80, 0.1);
+}
+
+/* ─── Live Preview Panel ───────────────────────────────────── */
+.tc-preview {
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    position: sticky;
+    top: 1rem;
+}
+
+.tc-preview h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    margin-bottom: 1rem;
+}
+
+.tc-preview-frame {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tc-preview-header {
+    padding: 0.6rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tc-preview-header .nav-links {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+}
+
+.tc-preview-body {
+    padding: 1rem;
+}
+
+.tc-preview-card {
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.tc-preview-card .card-title {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+}
+
+.tc-preview-card .card-sub {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.tc-preview-btns {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.tc-preview-btns .btn-mock {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.tc-preview-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+    color: inherit;
+}
+
+/* ─── Toast Notification ───────────────────────────────────── */
+.tc-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    z-index: 9999;
+    background: rgba(0, 255, 255, 0.12);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    animation: tc-toast-in 0.3s ease;
+}
+
+@keyframes tc-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── Back Link ────────────────────────────────────────────── */
+.tc-back {
+    display: inline-block;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    text-decoration: none;
+}
+
+.tc-back:hover {
+    opacity: 1;
+}

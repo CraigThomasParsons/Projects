@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Str;
 
 Artisan::command('inspire', function () {
@@ -31,3 +32,15 @@ Artisan::command('piper:token', function () {
     $this->info('PIPER_TOKEN generated and saved to .env');
     return 0;
 })->purpose('Generate and persist the Piper API token');
+
+Schedule::command('conversations:import-local ' . base_path('inbox') . ' --delete')
+    ->everyMinute()
+    ->withoutOverlapping();
+
+Schedule::command('conversations:sync-remote')
+    ->everyTwoHours()
+    ->withoutOverlapping();
+
+Schedule::command('inception:run')
+    ->twiceDaily(8, 20)
+    ->withoutOverlapping();

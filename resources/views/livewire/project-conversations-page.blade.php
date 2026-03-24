@@ -1,18 +1,25 @@
 <div class="project-page-container">
+    <style>.edit-project-callout label { color: #d0d0d0 !important; }</style>
     {{-- HEADER: Back & Edit --}}
-    <div class="page-header flex justify-between items-center p-2 mb-4">
-        <div>
-            <a
-                href="{{ route('projects.index') }}"
-                class="button hollow secondary small"
-            >
-                &#x2190; Back to Projects
-            </a>
-        </div>
+    <div class="page-header flex justify-between items-center p-2 mb-4" style="{{ $pageHeaderOverrideStyle }}">
         <div>
             <button
-                class="button hollow secondary small"
+                onclick="window.location='{{ route('projects.index') }}'"
+                class=" {{ $pageHeaderClasses }}"
+            >
+                Back to Projects
+            </button>
+        </div>
+        <div>
+            <a
+                href="{{ route('projects.inception.wizard', $project) }}"
+                class="button success"
+            >
+                Start Lean Inception
+            </a>
+            <button
                 wire:click="openEditProjectForm"
+                class=" {{ $pageHeaderClasses }} "
             >
                 Edit Project
             </button>
@@ -24,10 +31,10 @@
         @if ($showEditProjectForm)
             <div class="grid-x grid-margin-x">
                 <div class="cell">
-                    <div class="callout edit-project-callout">
+                    <div class="callout edit-project-callout" style="{{$wrongWayTodoThings}}">
                         <h2 class="h3">Edit Project</h2>
-                        <div class="grid-x grid-margin-x">
-                            <div class="cell">
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
+                            <div class="cell medium-8">
                                 <label>Name
                                     <input
                                         type="text"
@@ -39,12 +46,24 @@
                                     <p class="form-error is-visible">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div class="cell medium-4">
+                                <label>Type
+                                    <select wire:model="editProjectType">
+                                        <option value="code">Code</option>
+                                        <option value="idea">Idea</option>
+                                    </select>
+                                </label>
+                                @error('editProjectType')
+                                    <p class="form-error is-visible">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div class="grid-x grid-margin-x">
-                            <div class="cell">
-                                <label>Description
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
+                            <div class="cell text-center">
+                                <label style="display: flex; flex-direction: column; align-items: center;">Description
                                     <textarea
+                                        style="margin: 0 auto; width: 90%;"
                                         wire:model="editProjectDescription"
                                         placeholder="Short description"
                                         rows="6"
@@ -56,7 +75,7 @@
                             </div>
                         </div>
 
-                        <div class="grid-x grid-margin-x">
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
                             <div class="cell medium-6">
                                 <label>Local Location
                                     <input
@@ -83,7 +102,7 @@
                             </div>
                         </div>
 
-                        <div class="grid-x grid-margin-x">
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
                             <div class="cell medium-6">
                                 <label>Gitea Location
                                     <input
@@ -110,10 +129,11 @@
                             </div>
                         </div>
 
-                        <div class="grid-x grid-margin-x">
-                            <div class="cell">
-                                <label>Framework Description
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
+                            <div class="cell text-center">
+                                <label style="display: flex; flex-direction: column; align-items: center;">Framework Description
                                     <textarea
+                                        style="margin: 0 auto; width: 90%;"
                                         wire:model="editFrameworkDescription"
                                         placeholder="Laravel 11 monolith with Livewire and PostgreSQL"
                                         rows="4"
@@ -150,7 +170,14 @@
             {{-- Project Title & Description --}}
             <div class="grid-x grid-margin-x">
                 <div class="cell">
-                    <h1 class="h2 text-glow">{{ $project->name }}</h1>
+                    <h1 class="h2 text-glow" style="display: flex; align-items: center;">
+                        {{ $project->name }}
+                        @if ($project->type === 'idea')
+                            <span class="label secondary" style="font-size: 0.5em; margin-left: 15px; border-radius: 4px;">Idea</span>
+                        @else
+                            <span class="label primary" style="font-size: 0.5em; margin-left: 15px; border-radius: 4px;">Code</span>
+                        @endif
+                    </h1>
                     @if ($project->description)
                         <div class="project-description markdown-content prose prose-slate max-w-none dark:prose-invert">
                             {!! Str::markdown($project->description) !!}
@@ -158,7 +185,7 @@
                     @endif
 
                     @if ($project->local_location || $project->github_repo || $project->gitea_location || $project->framework_description || $project->languages)
-                        <div class="callout secondary" style="margin-top: 0.75rem;">
+                        <div class="callout secondary" style="{{ $callOutSecondaryStyle }} ">
                             <h3 class="h6" style="margin-bottom: 0.5rem;">Code Context</h3>
                             @if ($project->local_location)
                                 <div><strong>Local Location:</strong> {{ $project->local_location }}</div>
@@ -220,7 +247,7 @@
 
             <ul class="no-bullet">
                 @forelse ($conversations as $conversation)
-                    <li class="callout secondary">
+                    <li class="callout secondary" style="{{ $callOutSecondaryStyle }} ">
                         <div class="grid-x grid-margin-x align-middle">
                             <div class="cell auto">
                                 <strong>{{ $conversation->title ?? 'Untitled Conversation' }}</strong>
@@ -256,6 +283,12 @@
                                         class="button secondary"
                                     >
                                         Sync
+                                    </button>
+                                    <button
+                                        wire:click="openMoveModal({{ $conversation->id }})"
+                                        class="button secondary hollow"
+                                    >
+                                        Move
                                     </button>
                                 @endif
                                 <button
@@ -411,6 +444,50 @@
                     </div>
                 </div>
             @endif
+
+            @if ($showMoveModal)
+                <div class="reveal-overlay" style="display: block;">
+                    <div
+                        class="reveal small"
+                        style="display: block;"
+                        role="dialog"
+                        aria-modal="true"
+                        wire:keydown.escape="closeMoveModal"
+                    >
+                        <h2>Move Conversation</h2>
+
+                        <label>Target Project
+                            <select wire:model.defer="targetProjectId">
+                                @foreach($availableProjects as $proj)
+                                    <option value="{{ $proj->id }}">{{ $proj->name }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+
+                        @error('targetProjectId')
+                            <p class="form-error is-visible">{{ $message }}</p>
+                        @enderror
+                        @error('conversationToMoveId')
+                            <p class="form-error is-visible">{{ $message }}</p>
+                        @enderror
+
+                        <div class="button-group align-right">
+                            <button
+                                wire:click="closeMoveModal"
+                                class="button secondary hollow"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                wire:click="moveConversation"
+                                class="button primary"
+                            >
+                                Move Conversation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
         @endif
     </div>
 
@@ -431,4 +508,15 @@
         </div>
     </div>
     @endif
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            const syncTheme = () => {
+                const theme = localStorage.getItem('theme') || 'cyberpunk';
+                @this.call('setTheme', theme);
+            };
+            syncTheme();
+            window.addEventListener('theme-changed', syncTheme);
+        });
+    </script>
 </div>

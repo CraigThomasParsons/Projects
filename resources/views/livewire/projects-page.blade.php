@@ -8,7 +8,7 @@
 
 
                     <a href="{{ route('preferences') }}" class="button hollow secondary" style="margin-bottom: 0;">
-                        Theme Settings ⚙️
+                        Settings ⚙️
                     </a>
                     @if ($showAddProjectModal === false)
                         <button
@@ -38,7 +38,7 @@
     <div class="grid-x grid-margin-x">
         <div class="cell">
             <h2 class="h4">Project List</h2>
-            <ul class="no-bullet">
+            <ul class="no-bullet" style="padding: 5px;">
                 @forelse ($projects as $project)
                     <li class="project-list-item">
                         <a
@@ -46,6 +46,11 @@
                             class="project-link"
                         >
                             <strong>{{ $project->name }}</strong>
+                            @if ($project->type === 'idea')
+                                <span class="label secondary" style="margin-left: 10px; border-radius: 4px;">Idea</span>
+                            @else
+                                <span class="label primary" style="margin-left: 10px; border-radius: 4px;">Code</span>
+                            @endif
                             @if ($project->description)
                                 <div class="subheader">
                                     {{ \Illuminate\Support\Str::limit($project->description, 160) }}
@@ -53,6 +58,9 @@
                             @endif
                         </a>
                     </li>
+                    @if (!$loop->last)
+                        <li><div>&nbsp;</div></li>
+                    @endif
                 @empty
                     <li class="text-muted">No projects found</li>
                 @endforelse
@@ -64,7 +72,7 @@
     {{-- Foundation Reveal Modal, no actual reveal is necessary we are just toggling visibility --}}
     @if ($showAddProjectModal)
     <div
-        class="modal modal-full"
+        class="modal modal-full project-edit-modal"
         wire:keydown.escape="$set('showAddProjectModal', false)"
         tabindex="0"
     >

@@ -2,21 +2,23 @@
     {{-- HEADER: Back Links --}}
     <div class="page-header grid-x grid-padding-x align-middle" style="padding:5px;">
         <div class="cell shrink">
-            <a
-                href="{{ route('projects.show', $project) }}"
-                class="button hollow secondary small"
+            <button
+                type="button"
+                onclick="window.location='{{ route('projects.show', $project) }}'"
+                class="{{ $pageHeaderClasses }}"
             >
-                &#x2190; Back to Conversations
-            </a>
+                Back to Conversations
+            </button>
         </div>
         <div class="cell auto"></div>
         <div class="cell shrink">
-            <a
-                href="{{ route('projects.index') }}"
-                class="button hollow secondary small"
+            <button
+                type="button"
+                onclick="window.location='{{ route('projects.index') }}'"
+                class="{{ $pageHeaderClasses }}"
             >
-                &#x2190; Back to Projects
-            </a>
+                Back to Projects
+            </button>
         </div>
     </div>
 
@@ -47,46 +49,62 @@
             </div>
         @endif
 
-        <div class="callout" style="margin-top: 0.75rem;">
-            <h3 style="margin-bottom: 0.5rem;">Edit Current Transcript</h3>
-            <form wire:submit.prevent="saveTranscriptEdits">
-                <label for="editable-transcript-textarea" class="show-for-sr">Editable transcript</label>
-                <textarea
-                    id="editable-transcript-textarea"
-                    wire:model.defer="editableTranscript"
-                    rows="12"
-                    placeholder="Edit the full conversation transcript here..."
-                ></textarea>
-
-                @error('editableTranscript')
-                    <p class="form-error is-visible" style="margin-top: 0.5rem;">{{ $message }}</p>
-                @enderror
-
-                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                    <button type="submit" class="button warning small">Save Transcript</button>
+        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
+            <div class="cell">
+                <div class="callout" style="{{ $callOutStyle }}">
+                    <h3 style="margin-bottom: 0.5rem;">Edit Current Transcript</h3>
+                    <form wire:submit.prevent="saveTranscriptEdits">
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 1rem;">
+                            <div class="cell text-center">
+                                <label style="display: flex; flex-direction: column; align-items: center;">Transcript Content
+                                    <textarea
+                                        id="editable-transcript-textarea"
+                                        style="margin: 0 auto; width: 90%;"
+                                        wire:model.defer="editableTranscript"
+                                        rows="12"
+                                        placeholder="Edit the full conversation transcript here..."
+                                    ></textarea>
+                                </label>
+                                @error('editableTranscript')
+                                    <p class="form-error is-visible" style="margin-top: 0.5rem;">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="button-group align-right">
+                            <button type="submit" class="button warning small">Save Transcript</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
 
-        <div class="callout" style="margin-top: 0.75rem;">
-            <h3 style="margin-bottom: 0.5rem;">Add to Conversation</h3>
-            <form wire:submit.prevent="addToConversation">
-                <label for="new-entry-textarea" class="show-for-sr">New conversation entry</label>
-                <textarea
-                    id="new-entry-textarea"
-                    wire:model.defer="newEntry"
-                    rows="6"
-                    placeholder="Add notes, decisions, or follow-up context..."
-                ></textarea>
-
-                @error('newEntry')
-                    <p class="form-error is-visible" style="margin-top: 0.5rem;">{{ $message }}</p>
-                @enderror
-
-                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                    <button type="submit" class="button small">Append Entry</button>
+        <div class="grid-x grid-margin-x" style="margin-bottom: 2rem;">
+            <div class="cell">
+                <div class="callout" style="{{ $callOutStyle }}">
+                    <h3 style="margin-bottom: 0.5rem;">Add to Conversation</h3>
+                    <form wire:submit.prevent="addToConversation">
+                        <div class="grid-x grid-margin-x" style="margin-bottom: 1rem;">
+                            <div class="cell text-center">
+                                <label style="display: flex; flex-direction: column; align-items: center;">New Entry
+                                    <textarea
+                                        id="new-entry-textarea"
+                                        style="margin: 0 auto; width: 90%;"
+                                        wire:model.defer="newEntry"
+                                        rows="6"
+                                        placeholder="Add notes, decisions, or follow-up context..."
+                                    ></textarea>
+                                </label>
+                                @error('newEntry')
+                                    <p class="form-error is-visible" style="margin-top: 0.5rem;">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="button-group align-right">
+                            <button type="submit" class="button small">Append Entry</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="conversation-transcript-panel">
@@ -95,4 +113,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            const syncTheme = () => {
+                const theme = localStorage.getItem('theme') || 'cyberpunk';
+                @this.call('setTheme', theme);
+            };
+            syncTheme();
+            window.addEventListener('theme-changed', syncTheme);
+        });
+    </script>
 </div>

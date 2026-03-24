@@ -17,14 +17,13 @@
     <meta name="theme-color" content="#2563eb">
 
     <!-- Theme Styles -->
+    <link id="theme-materialize" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" disabled>
     <link id="theme-foundation" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" disabled>
     <link id="theme-foundation-tailwind" rel="stylesheet" href="{{ asset('css/foundation-tailwind.css') }}" disabled>
-    <link id="theme-materialize" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" disabled>
-    <link id="theme-materialize-tailwind" rel="stylesheet" href="{{ asset('css/materialize-tailwind.css') }}" disabled>
-    <link id="theme-materialize-dark" rel="stylesheet" href="{{ asset('css/materialize-dark.css') }}" disabled>
     <link id="theme-lcars" rel="stylesheet" href="{{ asset('css/lcars-tailwind.css') }}" disabled>
     <link id="theme-cyberpunk-overrides" rel="stylesheet" href="{{ asset('css/cyberpunk-tailwind.css') }}" disabled>
-    <link id="theme-ccdf" rel="stylesheet" href="{{ asset('css/ccdf.css') }}" disabled>
+    <link id="theme-writers-room" rel="stylesheet" href="{{ asset('css/writers-room-tailwind.css') }}" disabled>
+    <link rel="stylesheet" href="{{ asset('css/theme-customizer.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -37,7 +36,28 @@
     </style>
 </head>
 <body class="antialiased">
-    {{ $slot }}
+    <script src="{{ asset('js/theme-engine.js') }}"></script>
+    <script src="{{ asset('js/theme-customizer-component.js') }}" defer></script>
+
+    <!-- Global LCARS/Materialize NavBar -->
+    <div id="global-navbar" style="display: none;">
+        <nav>
+            <div class="nav-wrapper">
+                <a href="{{ route('projects.index') }}" class="brand-logo" style="padding-left: 20px;">LCARS-OS</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex; height: 100%;">
+                    <li><a href="{{ route('projects.index') }}">PROJECTS</a></li>
+                    <li><a href="{{ route('team.index') }}">TEAM</a></li>
+                    <li><a href="{{ route('preferences') }}">PREFERENCES</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    @hasSection('content')
+        @yield('content')
+    @else
+        {{ $slot }}
+    @endif
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -49,20 +69,18 @@
                 const mode = localStorage.getItem('mode') || 'dark';
 
                 // Reset Body Classes involved in theming
-                body.classList.remove('lcars', 'cyberpunk', 'foundation', 'materialize', 'light', 'dark');
+                body.classList.remove('lcars', 'cyberpunk', 'foundation', 'writers-room', 'light', 'dark');
 
                 // Enable/Disable CSS Files
+                const materializeCss = document.getElementById('theme-materialize');
                 const lcarsCss = document.getElementById('theme-lcars');
                 const foundationCss = document.getElementById('theme-foundation');
                 const foundationTailwindCss = document.getElementById('theme-foundation-tailwind');
-                const materializeCss = document.getElementById('theme-materialize');
-                const materializeTailwindCss = document.getElementById('theme-materialize-tailwind');
-                const materializeDarkCss = document.getElementById('theme-materialize-dark');
                 const cyberpunkOverridesCss = document.getElementById('theme-cyberpunk-overrides');
-                const ccdfCss = document.getElementById('theme-ccdf');
-                
+                const writersRoomCss = document.getElementById('theme-writers-room');
+
                 // Helper to disable all first
-                [lcarsCss, foundationCss, foundationTailwindCss, materializeCss, materializeTailwindCss, materializeDarkCss, cyberpunkOverridesCss, ccdfCss].forEach(link => {
+                [materializeCss, lcarsCss, foundationCss, foundationTailwindCss, cyberpunkOverridesCss, writersRoomCss].forEach(link => {
                     if(link) link.disabled = true;
                 });
 
@@ -74,26 +92,30 @@
                     document.documentElement.classList.remove('dark');
                 }
 
+                // Persist theme in a cookie so PHP/Livewire can read it server-side.
+                document.cookie = 'theme=' + theme + '; path=/; max-age=31536000; SameSite=Lax';
+
                 body.classList.add(theme);
 
                 if (theme === 'lcars') {
                     lcarsCss.disabled = false;
-                } else if (theme === 'foundation') {
-                    foundationCss.disabled = false;
-                    foundationTailwindCss.disabled = false;
-                } else if (theme === 'materialize') {
-                    materializeCss.disabled = false;
-                    materializeTailwindCss.disabled = false;
-                    body.classList.add(mode);
-                    if (mode === 'dark') {
-                        materializeDarkCss.disabled = false;
-                    }
-                } else if (theme === 'ccdf') {
-                    ccdfCss.disabled = false;
+                    if(materializeCss) materializeCss.disabled = false;
+                    const nav = document.getElementById('global-navbar');
+                    if(nav) nav.style.display = 'block';
                 } else {
-                    // Cyberpunk is default/base styles in app.css
-                    // Enable overrides for fixes
-                    cyberpunkOverridesCss.disabled = false;
+                    const nav = document.getElementById('global-navbar');
+                    if(nav) nav.style.display = 'none';
+
+                    if (theme === 'foundation') {
+                        foundationCss.disabled = false;
+                        foundationTailwindCss.disabled = false;
+                    } else if (theme === 'writers-room') {
+                        writersRoomCss.disabled = false;
+                    } else {
+                        // Cyberpunk is default/base styles in app.css
+                        // Enable overrides for fixes
+                        cyberpunkOverridesCss.disabled = false;
+                    }
                 }
             };
             
@@ -106,7 +128,6 @@
             });
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     @livewireScripts
 </body>

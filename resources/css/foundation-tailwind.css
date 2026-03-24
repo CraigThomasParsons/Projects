@@ -18,6 +18,22 @@
    @apply bg-slate-800 border-slate-700 text-slate-200;
 }
 
+:is(.dark) body.foundation .callout {
+   @apply bg-slate-800 border-slate-700 text-slate-200;
+}
+
+body.foundation .edit-project-callout,
+body.foundation .project-page-container .edit-project-callout {
+   width: 78vw !important;
+   max-width: none !important;
+   min-width: 78vw !important;
+   position: relative;
+   left: 50%;
+   margin-left: -39vw !important;
+   margin-right: 0 !important;
+   z-index: 50;
+}
+
 :is(.dark) body.foundation .top-bar,
 :is(.dark) body.foundation .top-bar ul {
    @apply bg-slate-900 text-slate-200;

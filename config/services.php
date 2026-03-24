@@ -40,6 +40,12 @@ return [
         'browser_sync_url' => env('PIPER_BROWSER_SYNC_URL'),
     ],
 
+    'ai' => [
+        'base_url' => env('AI_BASE_URL', 'https://api.openai.com/v1'),
+        'api_key' => env('AI_API_KEY'),
+        'model' => env('AI_MODEL', 'gpt-4o'),
+    ],
+
     'project_projection' => [
         'timeout_seconds' => env('PROJECT_PROJECTION_TIMEOUT_SECONDS', 8),
         'targets' => [
@@ -52,6 +58,8 @@ return [
                 'name' => 'devbacklog',
                 'url' => env('DEVBACKLOG_PROJECT_SYNC_URL'),
                 'token' => env('DEVBACKLOG_PROJECT_SYNC_TOKEN'),
+                // base_url is the scheme+host, used for webhook calls beyond the projection-sync path.
+                'base_url' => env('DEVBACKLOG_BASE_URL', 'http://dev.elasticgun.com'),
             ],
         ],
     ],

@@ -44,6 +44,8 @@ body.cyberpunk {
         linear-gradient(90deg, rgba(0, 20, 40, 0.7) 1px, transparent 1px);
     background-size: 40px 40px;
     min-height: 100vh;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .project-page-container {
@@ -61,20 +63,12 @@ body.cyberpunk {
 /* High Specificity Override for Edit Project Width */
 body.cyberpunk .edit-project-callout,
 body.cyberpunk .project-page-container .edit-project-callout {
-    width: 80vw !important;
-    max-width: none !important;
-    min-width: 80vw !important;
-    position: relative;
-    left: 50%;
-    margin-left: -40vw !important;
-    margin-right: 0 !important;
     flex: 1;
     min-height: calc(100vh - 180px);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     z-index: 50;
-    /* Ensure it sits above if needed */
 }
 
 /* Fix for White Background on Preferences Page */
@@ -87,6 +81,7 @@ body.cyberpunk .card {
 
 .edit-project-callout textarea {
     min-height: 45vh;
+    min-width: 90%;
 }
 
 /* Scoped Headers */
@@ -205,10 +200,11 @@ body.cyberpunk .callout.secondary a strong {
 body.cyberpunk .project-list-item {
     background-color: #1a1a1a;
     border: 1px solid #333;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 3rem !important;
+    padding: 1.5rem !important;
     transition: all 0.3s ease;
     list-style-type: none;
+    display: block !important;
 }
 
 body.cyberpunk .project-list-item:hover {
@@ -551,4 +547,18 @@ body.cyberpunk .danger-zone-label {
     font-weight: bold;
     text-transform: uppercase;
     text-shadow: 0 0 5px var(--sr-neon-red);
+}
+
+/* Project Edit Modal Customization */
+body.cyberpunk .project-edit-modal {
+    width: 78vw !important;
+    max-width: 78vw !important;
+    min-width: 78vw !important;
+    background-color: #23202e !important;
+    color: #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 0 24px rgba(35,32,46,0.7);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
 }

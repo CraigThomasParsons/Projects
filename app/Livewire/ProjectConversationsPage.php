@@ -9,6 +9,8 @@ use App\Models\Project;
 use App\Services\ChatGptShareImporter;
 use App\Services\PiperBrowserConversationSyncService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Throwable;
 
@@ -22,8 +24,14 @@ use Throwable;
  */
 class ProjectConversationsPage extends Component
 {
+
+    const CHAT_LINK = 'chat_link';
+    const DEFAULT_THEME = 'cyberpunk';
+
     public Project $project;
     public Collection $conversations;
+
+    public string $theme = self::DEFAULT_THEME;
 
     public bool $showShareUrlModal = false;
     public bool $showChatLinkModal = false;
@@ -33,6 +41,7 @@ class ProjectConversationsPage extends Component
 
     public bool $showEditProjectForm = false;
     public string $editProjectName = '';
+    public string $editProjectType = 'code';
     public string $editProjectDescription = '';
     public string $editLocalLocation = '';
     public string $editGithubRepo = '';
@@ -43,6 +52,21 @@ class ProjectConversationsPage extends Component
     public string $manualConversationTitle = '';
     public string $manualConversationContent = '';
 
+    // The bad practice inline styles.
+    public string $wrongWayTodoThings = '';
+    public string $callOutSecondaryStyle = '';
+    public string $pageHeaderOverrideStyle = '';
+    public string $pageHeaderClasses = 'button hollow secondary';
+
+    public array $callOutSecondaryStyles = [
+        'margin-top: 0.75rem;'
+    ];
+
+    public bool $showMoveModal = false;
+    public ?int $conversationToMoveId = null;
+    public ?int $targetProjectId = null;
+    public Collection $availableProjects;
+
     /**
      * Initialize the component with the target project.
      */
@@ -51,8 +75,71 @@ class ProjectConversationsPage extends Component
         // Cache the route-bound project for reuse.
         $this->project = $project;
 
+        // Read theme from cookie so server-side logic can be theme-aware on initial load.
+        $this->theme = request()->cookie('theme', 'cyberpunk');
+
         // Load the initial conversations so the list renders immediately.
         $this->loadConversations();
+
+        // Too much vibecoding, had to start nailing things to wall to get them to change.
+        $this->initializeProjectStyles();
+    }
+
+    /**
+     * Initialize the component with custom styles for the edit project form.
+     * Too much vibecoding led to this. But finally I'm going to 
+     */
+public function initializeProjectStyles(): void
+{
+    $inlineStyle = [
+        'width: 80vw',
+        'max-width: none',
+        'min-width: 80vw',
+        'background-color: #23202e',
+        'color: #d0d0d0',
+        'position: relative'
+    ];
+
+    // Fix bracket structure and logic
+    if ($this->theme === 'foundation') {
+        // Override styles for Foundation theme to fix modal conflicts.
+        $inlineStyle[] = 'color: #fefefe';
+        $inlineStyle[] = 'background-color: #334155';
+        $inlineStyle[] = 'left: 50%';
+        $inlineStyle[] = 'transform: translateX(-50%)';
+
+        $this->callOutSecondaryStyles[] = 'color: #d0d0d0';
+        $this->callOutSecondaryStyles[] = 'background-color: #334155';
+
+    } elseif ($this->theme === 'lcars') {
+        $inlineStyle[] = 'background-color: #000000';
+        $inlineStyle[] = 'color: #ff9900';
+    }
+
+    if ($this->theme === 'writers-room') {
+        $inlineStyle[] = 'background-color: #fefefe';
+        $inlineStyle[] = 'color: #23202e';
+    } else {
+        $this->pageHeaderClasses .= ' small ';
+    }
+
+    // This is a "wrong way todo thing" to inject styles for the edit project form without a separate CSS file.
+    // The styles are necessary to override Foundation's default modal styles which are applied via class and interfere with our custom layout.
+    $this->wrongWayTodoThings = implode('; ', $inlineStyle);
+    $this->callOutSecondaryStyle = implode('; ', $this->callOutSecondaryStyles);
+    $this->pageHeaderOverrideStyle = implode('; ', [
+        'border-bottom: 1px solid #444;',
+        'margin-bottom: 1rem;',
+    ]);
+}
+
+    /**
+     * Sync the active theme from the client after a live theme switch.
+     */
+    public function setTheme(string $theme): void
+    {
+        $allowed = ['cyberpunk', 'foundation', 'lcars', 'writers-room'];
+        $this->theme = in_array($theme, $allowed, true) ? $theme : 'cyberpunk';
     }
 
     /**
@@ -94,6 +181,80 @@ class ProjectConversationsPage extends Component
         $this->showShareUrlModal = false;
         $this->showChatLinkModal = false;
         $this->showManualPasteModal = false;
+        $this->showMoveModal = false;
+        $this->conversationToMoveId = null;
+        $this->targetProjectId = null;
+    }
+
+    /**
+     * Open the move conversation modal.
+     */
+    public function openMoveModal(int $conversationId): void
+    {
+        $this->closeConversationModals();
+        $this->conversationToMoveId = $conversationId;
+        $this->availableProjects = Project::where('id', '!=', $this->project->id)->orderBy('name')->get();
+        
+        // Default to Unassigned if it exists
+        $unassigned = $this->availableProjects->firstWhere('name', 'Unassigned');
+        if ($unassigned) {
+            $this->targetProjectId = $unassigned->id;
+        }
+
+        $this->showMoveModal = true;
+    }
+
+    /**
+     * Close the move modal.
+     */
+    public function closeMoveModal(): void
+    {
+        $this->showMoveModal = false;
+        $this->conversationToMoveId = null;
+        $this->targetProjectId = null;
+    }
+
+    /**
+     * Move the conversation to a new project, physically relocating the file if it exists.
+     */
+    public function moveConversation(): void
+    {
+        $this->validate([
+            'conversationToMoveId' => 'required|exists:conversations,id',
+            'targetProjectId' => 'required|exists:projects,id',
+        ]);
+
+        $conversation = $this->project->conversations()->find($this->conversationToMoveId);
+        $targetProject = Project::find($this->targetProjectId);
+
+        if (!$conversation || !$targetProject) {
+            session()->flash('error', 'Unable to complete move. Invalid conversation or project.');
+            $this->closeMoveModal();
+            return;
+        }
+
+        $title = $conversation->title ?? 'Imported Conversation';
+        $sanitizedTitle = Str::slug($title);
+
+        $oldSanitizedProjectName = Str::slug($this->project->name);
+        $newSanitizedProjectName = Str::slug($targetProject->name);
+
+        $oldFilePath = base_path("Projects/{$oldSanitizedProjectName}/{$sanitizedTitle}.md");
+        $newDirPath = base_path("Projects/{$newSanitizedProjectName}");
+        $newFilePath = "{$newDirPath}/{$sanitizedTitle}.md";
+
+        if (File::exists($oldFilePath)) {
+            if (!File::exists($newDirPath)) {
+                File::makeDirectory($newDirPath, 0755, true);
+            }
+            File::move($oldFilePath, $newFilePath);
+        }
+
+        $conversation->update(['project_id' => $targetProject->id]);
+
+        session()->flash('success', "Conversation moved to {$targetProject->name}.");
+        $this->loadConversations();
+        $this->closeMoveModal();
     }
 
     /**
@@ -102,6 +263,7 @@ class ProjectConversationsPage extends Component
     public function openEditProjectForm(): void
     {
         $this->editProjectName = $this->project->name;
+        $this->editProjectType = $this->project->type ?? 'code';
         $this->editProjectDescription = $this->project->description ?? '';
         $this->editLocalLocation = $this->project->local_location ?? '';
         $this->editGithubRepo = $this->project->github_repo ?? '';
@@ -126,6 +288,7 @@ class ProjectConversationsPage extends Component
     {
         $validatedData = $this->validate([
             'editProjectName' => ['required', 'string', 'max:255'],
+            'editProjectType' => ['required', 'in:code,idea'],
             'editProjectDescription' => ['nullable', 'string'],
             'editLocalLocation' => ['nullable', 'string', 'max:500'],
             'editGithubRepo' => ['nullable', 'string', 'max:500'],
@@ -136,6 +299,7 @@ class ProjectConversationsPage extends Component
 
         $this->project->update([
             'name' => $validatedData['editProjectName'],
+            'type' => $validatedData['editProjectType'],
             'description' => $validatedData['editProjectDescription'],
             'local_location' => $validatedData['editLocalLocation'],
             'github_repo' => $validatedData['editGithubRepo'],
@@ -206,7 +370,7 @@ class ProjectConversationsPage extends Component
         Conversation::create([
             'project_id' => $this->project->id,
             'share_url' => $validatedData['chatConversationUrl'],
-            'source_type' => 'chat_link',
+            'source_type' => self::CHAT_LINK
         ]);
 
         // Refresh list and clear entry form for next conversation.
@@ -257,7 +421,7 @@ class ProjectConversationsPage extends Component
 
         try {
             // Route sync behavior by source type to keep extraction explicit.
-            if ($conversation->source_type === 'chat_link') {
+            if ($conversation->source_type === self::CHAT_LINK) {
                 app(PiperBrowserConversationSyncService::class)->queueExtraction($conversation);
                 session()->flash('success', 'Piper browser extraction job queued.');
             } else {
@@ -281,8 +445,10 @@ class ProjectConversationsPage extends Component
     public function deleteConversation(int $conversationId): void
     {
         $conversation = $this->project->conversations()->find($conversationId);
+
         if ($conversation === null) {
             session()->flash('error', 'Conversation not found for this project.');
+
             return;
         }
 

@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Exclude the theme cookie from encryption so JS-set values are readable server-side.
+        $middleware->encryptCookies(except: ['theme']);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

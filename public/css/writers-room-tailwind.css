@@ -1,0 +1,528 @@
+/*
+   Writers Room Theme — public/css/writers-room-tailwind.css
+   Based on stories.elasticgun.com — Indigo/Gray, clean modern design.
+   Dark mode: :is(.dark) body.writers-room
+   Light mode: body.writers-room (default) or without .dark on <html>
+*/
+
+/* ─── CSS Variables ──────────────────────────────────────────── */
+body.writers-room {
+    --wr-bg:          #111827;
+    --wr-surface:     #1f2937;
+    --wr-surface-alt: #374151;
+    --wr-text:        #f3f4f6;
+    --wr-text-muted:  #9ca3af;
+    --wr-accent:      #818cf8;
+    --wr-accent-dark: #6366f1;
+    --wr-border:      #374151;
+}
+
+/* Light mode overrides */
+body.writers-room.light,
+:not(.dark) body.writers-room {
+    --wr-bg:          #f3f4f6;
+    --wr-surface:     #ffffff;
+    --wr-surface-alt: #f9fafb;
+    --wr-text:        #111827;
+    --wr-text-muted:  #6b7280;
+    --wr-accent:      #4f46e5;
+    --wr-accent-dark: #4338ca;
+    --wr-border:      #e5e7eb;
+}
+
+/* Dark mode explicit */
+:is(.dark) body.writers-room {
+    --wr-bg:          #111827;
+    --wr-surface:     #1f2937;
+    --wr-surface-alt: #374151;
+    --wr-text:        #f3f4f6;
+    --wr-text-muted:  #9ca3af;
+    --wr-accent:      #818cf8;
+    --wr-accent-dark: #6366f1;
+    --wr-border:      #374151;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+body.writers-room {
+    background-color: var(--wr-bg);
+    color: var(--wr-text);
+    font-family: Figtree, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    -webkit-font-smoothing: antialiased;
+}
+
+body.writers-room h1,
+body.writers-room h2,
+body.writers-room h3,
+body.writers-room h4,
+body.writers-room h5,
+body.writers-room h6 {
+    color: var(--wr-text);
+    font-weight: 600;
+}
+
+body.writers-room a {
+    color: var(--wr-accent);
+    text-decoration: none;
+}
+
+body.writers-room a:hover {
+    color: var(--wr-accent-dark);
+    text-decoration: underline;
+}
+
+body.writers-room label {
+    color: var(--wr-text) !important;
+}
+
+/* ─── Cards & Callouts ───────────────────────────────────────── */
+body.writers-room .card,
+body.writers-room .callout {
+    background-color: var(--wr-surface) !important;
+    border: 1px solid var(--wr-border) !important;
+    border-radius: 0.5rem;
+    color: var(--wr-text) !important;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+    padding: 5px;
+}
+
+body.writers-room .card label,
+body.writers-room .callout label {
+    color: var(--wr-text) !important;
+}
+
+body.writers-room .callout h1,
+body.writers-room .callout h2,
+body.writers-room .callout h3,
+body.writers-room .callout h4 {
+    color: var(--wr-text) !important;
+}
+
+/* ─── Inputs ─────────────────────────────────────────────────── */
+body.writers-room input[type="text"],
+body.writers-room input[type="email"],
+body.writers-room input[type="password"],
+body.writers-room input[type="url"],
+body.writers-room input[type="search"],
+body.writers-room select,
+body.writers-room textarea {
+    background-color: var(--wr-surface) !important;
+    border: 1px solid var(--wr-border) !important;
+    border-radius: 0.375rem;
+    color: var(--wr-text) !important;
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+}
+
+body.writers-room input:focus,
+body.writers-room select:focus,
+body.writers-room textarea:focus {
+    outline: none;
+    border-color: var(--wr-accent) !important;
+    box-shadow: 0 0 0 1px var(--wr-accent);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+body.writers-room .button,
+body.writers-room button.button {
+    background-color: var(--wr-accent) !important;
+    color: #ffffff !important;
+    border: 1px solid transparent !important;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    margin: 3px;
+}
+
+body.writers-room .button:hover {
+    background-color: var(--wr-accent-dark) !important;
+    color: #ffffff !important;
+}
+
+body.writers-room .button.secondary,
+body.writers-room .button.hollow.secondary {
+    background-color: transparent !important;
+    border: 1px solid var(--wr-border) !important;
+    color: var(--wr-text-muted) !important;
+}
+
+body.writers-room .button.secondary:hover,
+body.writers-room .button.hollow.secondary:hover {
+    background-color: var(--wr-surface-alt) !important;
+    color: var(--wr-text) !important;
+}
+
+body.writers-room .button.warning {
+    background-color: #d97706 !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+}
+
+body.writers-room .button.warning:hover {
+    background-color: #b45309 !important;
+}
+
+/* ─── Top Bar / Nav ──────────────────────────────────────────── */
+body.writers-room .top-bar,
+body.writers-room .top-bar ul {
+    background-color: var(--wr-surface);
+    border-bottom: 1px solid var(--wr-border);
+    color: var(--wr-text);
+}
+
+body.writers-room .top-bar a {
+    color: var(--wr-text);
+}
+
+/* ─── Page Header ────────────────────────────────────────────── */
+body.writers-room .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: transparent;
+    border-bottom: 1px solid var(--wr-border);
+    padding: 5px;
+    margin-bottom: 2.5rem;
+    min-width: 78vw;
+    max-width: 92vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ─── Page Containers ────────────────────────────────────────── */
+body.writers-room .project-page-container,
+body.writers-room .page-body,
+body.writers-room .tc-page {
+    padding: 5px;
+    margin: 2.5rem auto;
+}
+
+/* ─── Code Blocks ────────────────────────────────────────────── */
+body.writers-room pre,
+body.writers-room code {
+    font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+body.writers-room pre {
+    background-color: #0d1117 !important;
+    color: #e2e8f0 !important;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--wr-border);
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+body.writers-room pre *,
+body.writers-room pre code,
+body.writers-room pre span {
+    background-color: transparent !important;
+    color: inherit !important;
+    text-shadow: none !important;
+}
+
+body.writers-room :not(pre) > code {
+    background-color: var(--wr-surface-alt);
+    color: var(--wr-accent);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+/* ─── Edit Project Callout ───────────────────────────────────── */
+body.writers-room .edit-project-callout {
+    background-color: var(--wr-surface) !important;
+    border: 1px solid var(--wr-border) !important;
+    color: var(--wr-text) !important;
+}
+
+body.writers-room .edit-project-callout label {
+    color: var(--wr-text) !important;
+}
+
+/* ─── Project List Items ─────────────────────────────────────── */
+body.writers-room .project-list-item,
+body.writers-room [class*="project-item"] {
+    background-color: var(--wr-surface);
+    border: 1px solid var(--wr-border);
+    border-radius: 0.5rem;
+    color: var(--wr-text);
+    transition: background-color 0.15s ease;
+}
+
+body.writers-room .project-list-item:hover {
+    background-color: var(--wr-surface-alt);
+}
+
+body.writers-room .project-link {
+    display: block;
+    padding: 0.875rem 1rem;
+    color: var(--wr-text);
+    text-decoration: none;
+}
+
+body.writers-room .project-link:hover {
+    text-decoration: none;
+    color: var(--wr-text);
+}
+
+/* ─── Foundation Grid Compatibility ─────────────────────────── */
+/*
+   The blade templates use Foundation's grid classes (grid-container,
+   grid-x, cell, small-*, medium-*, etc.). Since Foundation CSS is not
+   loaded for this theme, these classes are reimplemented here so pages
+   lay out correctly with responsive centering and column behaviour.
+*/
+
+/* Centered max-width container */
+body.writers-room .grid-container {
+    min-width: 78vw;
+    max-width: 92vw;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+/* Flex row */
+body.writers-room .grid-x {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+/* Row with margin gutters */
+body.writers-room .grid-margin-x {
+    margin-left: -0.9375rem;
+    margin-right: -0.9375rem;
+}
+
+body.writers-room .grid-margin-x > .cell {
+    margin-left: 0.9375rem;
+    margin-right: 0.9375rem;
+    width: calc(100% - 1.875rem);
+}
+
+/* Row with padding gutters */
+body.writers-room .grid-padding-x {
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+}
+
+body.writers-room .grid-padding-x > .cell {
+    padding-left: 0.9375rem;
+    padding-right: 0.9375rem;
+}
+
+/* Base cell — full width */
+body.writers-room .cell {
+    flex: 0 0 auto;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+}
+
+/* Flexible cells */
+body.writers-room .cell.auto {
+    flex: 1 1 0;
+    width: auto;
+}
+
+body.writers-room .cell.shrink {
+    flex: 0 0 auto;
+    width: auto;
+}
+
+/* Small column widths (mobile-first, all sizes) */
+body.writers-room .cell.small-6  { width: calc(50%  - 1.875rem); }
+body.writers-room .cell.small-4  { width: calc(33.333% - 1.875rem); }
+body.writers-room .cell.small-8  { width: calc(66.667% - 1.875rem); }
+body.writers-room .cell.small-12 { width: calc(100% - 1.875rem); }
+
+/* Medium column widths (≥ 640px) */
+@media (min-width: 640px) {
+    body.writers-room .cell.medium-6  { width: calc(50%  - 1.875rem); }
+    body.writers-room .cell.medium-4  { width: calc(33.333% - 1.875rem); }
+    body.writers-room .cell.medium-8  { width: calc(66.667% - 1.875rem); }
+    body.writers-room .cell.medium-3  { width: calc(25%  - 1.875rem); }
+    body.writers-room .cell.medium-9  { width: calc(75%  - 1.875rem); }
+    body.writers-room .cell.medium-12 { width: calc(100% - 1.875rem); }
+}
+
+/* Large column widths (≥ 1024px) */
+@media (min-width: 1024px) {
+    body.writers-room .cell.large-6  { width: calc(50%  - 1.875rem); }
+    body.writers-room .cell.large-4  { width: calc(33.333% - 1.875rem); }
+    body.writers-room .cell.large-8  { width: calc(66.667% - 1.875rem); }
+    body.writers-room .cell.large-3  { width: calc(25%  - 1.875rem); }
+    body.writers-room .cell.large-9  { width: calc(75%  - 1.875rem); }
+}
+
+/* Row alignment helpers */
+body.writers-room .grid-x.align-middle  { align-items: center; }
+body.writers-room .grid-x.align-bottom  { align-items: flex-end; }
+body.writers-room .grid-x.align-right   { justify-content: flex-end; }
+body.writers-room .grid-x.align-center  { justify-content: center; }
+body.writers-room .grid-x.align-justify { justify-content: space-between; }
+
+/* Text utilities */
+body.writers-room .text-right  { text-align: right; }
+body.writers-room .text-center { text-align: center; }
+body.writers-room .text-muted  { color: var(--wr-text-muted); }
+
+/* ─── Screen-reader / Accessibility Utilities ───────────────── */
+body.writers-room .show-for-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+/* ─── List & Typography Utilities ───────────────────────────── */
+body.writers-room .no-bullet {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+body.writers-room .subheader {
+    color: var(--wr-text-muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+    margin-top: 0.25rem;
+    line-height: 1.4;
+}
+
+/* ─── Button Variants ────────────────────────────────────────── */
+body.writers-room .button.primary {
+    background-color: var(--wr-accent) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+}
+
+body.writers-room .button.primary:hover {
+    background-color: var(--wr-accent-dark) !important;
+}
+
+body.writers-room .button.alert,
+body.writers-room .button.hollow.alert {
+    background-color: transparent !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+    color: #f87171 !important;
+}
+
+body.writers-room .button.alert:hover,
+body.writers-room .button.hollow.alert:hover {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    border-color: #ef4444 !important;
+}
+
+body.writers-room .button.small {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.75rem;
+}
+
+/* ─── Button Group ───────────────────────────────────────────── */
+body.writers-room .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+body.writers-room .button-group.align-right {
+    justify-content: flex-end;
+}
+
+/* ─── Callout Variants ───────────────────────────────────────── */
+body.writers-room .callout.secondary {
+    background-color: var(--wr-surface-alt) !important;
+    border-color: var(--wr-border) !important;
+}
+
+body.writers-room .callout.success {
+    background-color: rgba(16, 185, 129, 0.12) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    color: #6ee7b7 !important;
+}
+
+body.writers-room .callout.alert {
+    background-color: rgba(239, 68, 68, 0.12) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: #fca5a5 !important;
+}
+
+/* ─── Form Errors ────────────────────────────────────────────── */
+body.writers-room .form-error {
+    display: none;
+    color: #f87171;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+body.writers-room .form-error.is-visible {
+    display: block;
+}
+
+/* ─── Reveal / Modal ─────────────────────────────────────────── */
+body.writers-room .reveal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 1005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.writers-room .reveal {
+    background: var(--wr-surface);
+    border: 1px solid var(--wr-border);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    width: 90%;
+    max-width: 32rem;
+    position: relative;
+    z-index: 1006;
+    color: var(--wr-text);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+body.writers-room .reveal h2 {
+    margin-bottom: 1rem;
+}
+
+body.writers-room .modal.modal-full,
+body.writers-room .project-edit-modal {
+    background: var(--wr-surface);
+    border: 1px solid var(--wr-border);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 48rem;
+    position: relative;
+    color: var(--wr-text);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.writers-room .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--wr-text-muted);
+    padding: 0;
+}
+
+body.writers-room .close-button:hover {
+    color: var(--wr-text);
+}

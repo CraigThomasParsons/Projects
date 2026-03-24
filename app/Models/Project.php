@@ -15,6 +15,13 @@ class Project extends Model
         'project_uuid',
         'name',
         'description',
+        'type',
+        'readme',
+        'goals',
+        'context',
+        'architecture',
+        'tys',
+        'recommendedstack',
         'code_folder',
         'local_location',
         'github_repo',
@@ -42,8 +49,27 @@ class Project extends Model
     /**
      * Get the conversations for the project.
      */
+    /**
+     * Get the conversations for the project.
+     */
     public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class);
+    }
+
+    /**
+     * Get the aliases for the project.
+     */
+    public function aliases(): HasMany
+    {
+        return $this->hasMany(ProjectAlias::class);
+    }
+
+    /**
+     * Get the inceptions for the project.
+     */
+    public function inceptions(): HasMany
+    {
+        return $this->hasMany(Inception::class);
     }
 }
