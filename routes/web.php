@@ -3,9 +3,11 @@
 use App\Livewire\ConversationTranscriptPage;
 use App\Livewire\ProjectConversationsPage;
 use App\Livewire\ProjectsPage;
+use App\Livewire\RegistryEditorPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', ProjectsPage::class)->name('projects.index');
+Route::get('/registry', RegistryEditorPage::class)->name('registry');
 Route::get('/projects/{project}', ProjectConversationsPage::class)->name('projects.show');
 Route::get('/projects/{project}/conversations/{conversation}', ConversationTranscriptPage::class)
     ->name('conversations.show');

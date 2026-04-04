@@ -46,6 +46,7 @@
                 <a href="{{ route('projects.index') }}" class="brand-logo" style="padding-left: 20px;">LCARS-OS</a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: flex; height: 100%;">
                     <li><a href="{{ route('projects.index') }}">PROJECTS</a></li>
+                    <li><a href="{{ route('registry') }}">REGISTRY</a></li>
                     <li><a href="{{ route('team.index') }}">TEAM</a></li>
                     <li><a href="{{ route('preferences') }}">PREFERENCES</a></li>
                 </ul>

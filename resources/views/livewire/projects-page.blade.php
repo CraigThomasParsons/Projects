@@ -6,6 +6,9 @@
         <div class="cell small-6 text-right">
                 <div style="display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem;">
 
+                    <a href="{{ route('registry') }}" class="button hollow secondary" style="margin-bottom: 0;">
+                        Registry
+                    </a>
 
                     <a href="{{ route('preferences') }}" class="button hollow secondary" style="margin-bottom: 0;">
                         Settings ⚙️
