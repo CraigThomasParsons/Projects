@@ -32,9 +32,9 @@ class ProcessLeanInception implements ShouldQueue
             return;
         }
 
-        // CRITICAL GUARD: Only auto-process Idea projects, strictly ignoring Unassigned
-        if (strtolower($project->name) === 'unassigned' || $project->type !== 'idea') {
-            Log::info("ProcessLeanInception Listener: Skipping conversation {$conversation->id}, project '{$project->name}' is not an applicable Idea project.");
+        // CRITICAL GUARD: Only auto-process Code projects, strictly ignoring Unassigned
+        if (strtolower($project->name) === 'unassigned' || $project->type !== 'code') {
+            Log::info("ProcessLeanInception Listener: Skipping conversation {$conversation->id}, project '{$project->name}' is not an applicable Code project.");
             return;
         }
 

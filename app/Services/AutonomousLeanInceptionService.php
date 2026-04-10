@@ -57,39 +57,41 @@ Provide the output strictly as a JSON object matching this schema exactly. Do NO
 TRANSCRIPT:
 {$content}";
 
-        Log::info("AutonomousLeanInceptionService: Requesting OpenAI completions for project {$project->name}...");
+        Log::info("AutonomousLeanInceptionService: Requesting Claude completions for project {$project->name}...");
 
-        $baseUrl = rtrim(config('services.ai.base_url', 'https://api.openai.com/v1'), '/');
-        $response = Http::withToken(config('services.ai.api_key'))
+        $baseUrl = rtrim(config('services.anthropic.base_url', 'https://api.anthropic.com/v1'), '/');
+        $response = Http::withHeaders([
+            'x-api-key' => config('services.anthropic.api_key'),
+            'anthropic-version' => '2023-06-01',
+        ])
             ->timeout(120)
-            ->post($baseUrl . '/chat/completions', [
-                'model' => config('services.ai.model', 'gpt-4o'),
-                'response_format' => ['type' => 'json_object'],
+            ->post($baseUrl . '/messages', [
+                'model' => config('services.anthropic.model', 'claude-opus-4-6'),
+                'max_tokens' => 4096,
                 'messages' => [
-                    ['role' => 'system', 'content' => 'You are a JSON-only response bot. Output valid JSON matching the requested schema exactly.'],
                     ['role' => 'user', 'content' => $prompt]
                 ],
             ]);
 
         if ($response->failed()) {
-            Log::error("Failed to generate Lean Inception via OpenAI.", [
+            Log::error("Failed to generate Lean Inception via Claude.", [
                 'status' => $response->status(),
                 'body' => $response->body()
             ]);
             return;
         }
 
-        $data = $response->json('choices.0.message.content');
-        
+        $data = $response->json('content.0.text');
+
         if (!$data) {
-             Log::error("No valid choices returned from OpenAI.");
+             Log::error("No valid content returned from Claude.");
              return;
         }
 
         $parsed = json_decode($data, true);
 
         if (!$parsed) {
-            Log::error("Failed to parse JSON out of OpenAI response.", ['raw' => $data]);
+            Log::error("Failed to parse JSON out of Claude response.", ['raw' => $data]);
             return;
         }
 

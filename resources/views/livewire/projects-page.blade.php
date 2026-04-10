@@ -10,6 +10,10 @@
                         Registry
                     </a>
 
+                    <a href="{{ route('team.index') }}" class="button hollow secondary" style="margin-bottom: 0;">
+                        The Team
+                    </a>
+
                     <a href="{{ route('preferences') }}" class="button hollow secondary" style="margin-bottom: 0;">
                         Settings ⚙️
                     </a>
