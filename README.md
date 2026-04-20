@@ -26,7 +26,7 @@ A chat-centric project management and thinking environment built with Laravel.
 
 This project exists to support a workflow where **conversations are the primary unit of work**.  
 Instead of forcing ideas into tickets up front, it allows planning, execution, notes, code, images,
-and progress tracking to live together naturally — the same way developers actually think.
+and progress tracking to live together naturally : the same way developers actually think.
 
 ---
 
